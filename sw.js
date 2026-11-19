@@ -1,4 +1,4 @@
-const CACHE = 'jpsom-v2';
+const CACHE = 'jpsom-v3';
 const FILES = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './logo.png'];
 
 self.addEventListener('install', e => {

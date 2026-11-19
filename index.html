@@ -12,340 +12,396 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <style>
 :root{
-  --bg:#0d0f14;--card:#161a22;--card2:#1d222c;--line:#2a313d;
-  --tx:#e9edf3;--mut:#8f9aab;--acc:#e3262e;--acc2:#28c7fa;--ok:#3ddc84;--warn:#ffc53d;--bad:#ff4d5e;
+  --bg:#0b0d12;--card:#151921;--card2:#1c212b;--card3:#232937;--line:#2a313d;
+  --tx:#eef1f6;--mut:#8f9aab;--acc:#e3262e;--acc-d:#a8141b;--acc2:#28c7fa;--ok:#3ddc84;--warn:#ffc53d;--bad:#ff4d5e;
 }
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px}
-body{padding-bottom:calc(70px + env(safe-area-inset-bottom))}
-header{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,#0d0f14 80%,#0d0f1400);padding:calc(10px + env(safe-area-inset-top)) 16px 10px;display:flex;align-items:center;gap:12px;max-width:760px;margin:0 auto}
-header .logo{height:64px;width:auto;border-radius:12px;background:#fff;display:block}
-header small{color:var(--mut);font-size:12px;line-height:1.35}
-main{max-width:760px;margin:0 auto;padding:4px 12px}
-section.tab{display:none}section.tab.on{display:block}
-details{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:10px 0;overflow:hidden}
-summary{list-style:none;cursor:pointer;padding:14px 16px;font-weight:600;display:flex;justify-content:space-between;align-items:center}
-summary::-webkit-details-marker{display:none}
-summary::after{content:"+";color:var(--acc);font-size:20px}
-details[open] summary::after{content:"–"}
-summary span{font-weight:400;color:var(--mut);font-size:12px;display:block}
-.body{padding:0 16px 16px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
-label{display:block;font-size:12px;color:var(--mut);margin-bottom:4px}
-input,select{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--tx);border-radius:10px;padding:10px;font-size:15px}
+body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+body.lock{overflow:hidden}
+
+/* ---------- topo ---------- */
+header{position:sticky;top:0;z-index:20;background:#0b0d12f2;backdrop-filter:blur(10px);border-bottom:1px solid #1c212b}
+.hwrap{max-width:760px;margin:0 auto;padding:calc(8px + env(safe-area-inset-top)) 14px 8px;display:flex;align-items:center;gap:12px}
+.logo{height:52px;width:auto;border-radius:10px;background:#fff;display:block}
+.htx{flex:1;min-width:0}
+.htx b{display:block;font-size:13px;font-weight:600}
+.htx small{color:var(--mut);font-size:11.5px}
+.ibtn{width:44px;height:44px;border-radius:12px;background:var(--card2);border:1px solid var(--line);display:grid;place-items:center;padding:0;color:var(--tx)}
+.ibtn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+
+/* ---------- menu geral suspenso ---------- */
+.menu{position:fixed;inset:0;z-index:30;display:none}
+.menu.on{display:block}
+.menu .bk{position:absolute;inset:0;background:#000a}
+.menu .pn{position:absolute;top:calc(68px + env(safe-area-inset-top));right:10px;left:10px;max-width:520px;margin-left:auto;max-height:calc(100vh - 160px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:8px;box-shadow:0 20px 50px #000c;animation:drop .16s ease-out}
+@keyframes drop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.mg{padding:10px 10px 4px;font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--acc);font-weight:700;display:flex;align-items:center;gap:8px}
+.mg svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mi{display:block;width:100%;text-align:left;background:none;color:var(--tx);border-radius:10px;padding:10px 12px 10px 34px;font-weight:500;font-size:14px}
+.mi:active,.mi.cur{background:var(--card3)}
+.mi.cur{color:var(--acc)}
+
+main{max-width:760px;margin:0 auto;padding:10px 12px}
+section.tab{display:none}section.tab.on{display:block;animation:fade .2s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.cat{display:flex;align-items:center;gap:10px;margin:6px 2px 10px}
+.cat .ic{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--acc),var(--acc-d));display:grid;place-items:center}
+.cat .ic svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cat h2{font-size:19px}
+.cat p{font-size:12px;color:var(--mut)}
+
+/* ---------- seletor suspenso de ferramenta ---------- */
+.dd{position:relative;margin-bottom:12px;z-index:10}
+.dd-btn{width:100%;display:flex;align-items:center;gap:12px;text-align:left;background:var(--card2);border:1px solid var(--line);color:var(--tx);border-radius:14px;padding:12px 14px}
+.dd-btn .t{flex:1;min-width:0}
+.dd-btn .t i{display:block;font-style:normal;font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--mut);font-weight:600}
+.dd-btn .t b{display:block;font-size:16px}
+.dd-btn .t small{display:block;font-size:12px;color:var(--mut);font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dd-btn svg{width:20px;height:20px;stroke:var(--acc);fill:none;stroke-width:2.4;transition:transform .2s;flex:none}
+.dd.open .dd-btn{border-color:var(--acc)}
+.dd.open .dd-btn svg{transform:rotate(180deg)}
+.dd-list{display:none;position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px;box-shadow:0 16px 40px #000b;animation:drop .14s ease-out}
+.dd.open .dd-list{display:block}
+.dd-it{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;color:var(--tx);border-radius:10px;padding:10px 12px;font-weight:400}
+.dd-it b{display:block;font-size:14.5px;font-weight:600}
+.dd-it small{display:block;font-size:12px;color:var(--mut)}
+.dd-it .dot{width:8px;height:8px;border-radius:50%;background:var(--line);flex:none}
+.dd-it.cur .dot{background:var(--acc)}
+.dd-it.cur b{color:var(--acc)}
+.dd-it:active{background:var(--card3)}
+
+/* ---------- cartões ---------- */
+.tool{display:none}
+.tool.on{display:block;animation:fade .2s}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.card>h4{font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:var(--mut);margin-bottom:12px;font-weight:600}
+details.card{padding:0}
+details.card summary{list-style:none;cursor:pointer;padding:14px 16px;display:flex;align-items:center;gap:10px}
+details.card summary::-webkit-details-marker{display:none}
+details.card summary .t{flex:1}
+details.card summary b{display:block;font-size:14px}
+details.card summary small{color:var(--mut);font-size:12px}
+details.card summary svg{width:18px;height:18px;stroke:var(--acc);fill:none;stroke-width:2.4;transition:transform .2s}
+details.card[open] summary svg{transform:rotate(180deg)}
+details.card .in{padding:0 16px 16px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+label{display:block;font-size:12px;color:var(--mut);margin-bottom:5px}
+input,select{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--tx);border-radius:10px;padding:11px 10px;font-size:15px;-webkit-appearance:none;appearance:none}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e3262e' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:16px;padding-right:32px}
 input:focus,select:focus{outline:2px solid var(--acc);border-color:transparent}
-input[type=range]{padding:0;accent-color:var(--acc)}
-button{background:var(--acc);color:#fff;border:0;border-radius:10px;padding:11px 16px;font-size:15px;font-weight:600;cursor:pointer}
+input[type=range]{padding:0;accent-color:var(--acc);height:28px;background:none;border:0;-webkit-appearance:auto;appearance:auto}
+button{background:var(--acc);color:#fff;border:0;border-radius:11px;padding:12px 18px;font-size:15px;font-weight:600;cursor:pointer}
+button:active{filter:brightness(.9)}
 button.sec{background:var(--card2);border:1px solid var(--line);color:var(--tx)}
-.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 .out{margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
-.kv{background:var(--card2);border-radius:10px;padding:10px}
-.kv i{font-style:normal;font-size:11px;color:var(--mut);display:block}
-.kv b{font-size:18px;color:var(--acc2)}
-.note{font-size:12.5px;color:var(--mut);margin-top:10px;line-height:1.5}
-.alert{margin-top:10px;padding:10px;border-radius:10px;font-size:13px;line-height:1.45}
-.alert.ok{background:#3ddc8418;color:var(--ok)}.alert.warn{background:#ffc53d18;color:var(--warn)}.alert.bad{background:#ff4d5e18;color:var(--bad)}
-canvas{width:100%;background:#0a0c10;border:1px solid var(--line);border-radius:10px;margin-top:12px;display:block}
+.kv{background:var(--card2);border-radius:12px;padding:10px 12px;border-left:3px solid var(--acc2)}
+.kv i{font-style:normal;font-size:11px;color:var(--mut);display:block;margin-bottom:2px}
+.kv b{font-size:18px;color:var(--tx)}
+.kv.hl{border-left-color:var(--acc)}
+.note{font-size:12.5px;color:var(--mut);margin-top:12px;line-height:1.55}
+.alert{margin-top:10px;padding:10px 12px;border-radius:10px;font-size:13px;line-height:1.45}
+.alert.ok{background:#3ddc8418;color:var(--ok)}.alert.warn{background:#ffc53d18;color:var(--warn)}.alert.bad{background:#ff4d5e18;color:var(--bad)}.alert.info{background:#28c7fa14;color:var(--acc2)}
+canvas{width:100%;background:#08090d;border:1px solid var(--line);border-radius:12px;margin-top:12px;display:block}
 .legend{display:flex;gap:14px;font-size:12px;color:var(--mut);margin-top:6px;flex-wrap:wrap}
 .legend em{font-style:normal;display:inline-block;width:12px;height:3px;border-radius:2px;margin-right:5px;vertical-align:middle}
-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}
-th,td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left}
-th{color:var(--mut);font-weight:500}
-h3{font-size:13px;color:var(--acc);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.5px}
-nav{position:fixed;bottom:0;left:0;right:0;background:#11141bf2;border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom);backdrop-filter:blur(8px);z-index:9}
-nav button{flex:1;background:none;color:var(--mut);border-radius:0;padding:9px 2px 8px;font-size:11px;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px}
+.tw{overflow-x:auto;margin-top:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{color:var(--mut);font-weight:500;font-size:12px}
+tr.best td{background:#e3262e14}
+tr.best td:first-child{box-shadow:inset 3px 0 var(--acc)}
+.tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.tag.ok{background:#3ddc8420;color:var(--ok)}.tag.warn{background:#ffc53d20;color:var(--warn)}.tag.bad{background:#ff4d5e20;color:var(--bad)}.tag.info{background:#28c7fa20;color:var(--acc2)}
+h3{font-size:12px;color:var(--acc);margin:18px 0 10px;text-transform:uppercase;letter-spacing:.6px}
+.pill{display:inline-block;padding:1px 7px;border-radius:20px;background:var(--card3);font-size:10.5px;color:var(--mut);margin-left:4px}
+.seg{display:flex;background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:3px;gap:3px}
+.seg button{flex:1;background:none;color:var(--mut);padding:8px 4px;font-size:13px;border-radius:8px}
+.seg button.on{background:var(--acc);color:#fff}
+
+/* ---------- barra inferior ---------- */
+nav{position:fixed;bottom:0;left:0;right:0;background:#0f1218f5;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);backdrop-filter:blur(10px);z-index:15}
+nav .nw{max-width:760px;margin:0 auto;display:flex}
+nav button{flex:1;background:none;color:var(--mut);border-radius:0;padding:8px 2px 7px;font-size:10.5px;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative}
 nav button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-nav button.on{color:var(--acc)}
-.big{font-size:26px!important}
-.pill{display:inline-block;padding:2px 8px;border-radius:20px;background:var(--card2);font-size:11px;color:var(--mut);margin-left:6px}
+nav button.on{color:var(--tx)}
+nav button.on svg{stroke:var(--acc)}
+nav button.on::before{content:"";position:absolute;top:0;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px;background:var(--acc)}
 </style>
 </head>
 <body>
 <header>
-  <img class="logo" src="logo.png" alt="JPSOM — Instalação e Acessórios">
-  <small>Simulação e cálculo<br>para som automotivo</small>
+  <div class="hwrap">
+    <img class="logo" src="logo.png" alt="JPSOM — Instalação e Acessórios">
+    <div class="htx"><b>Simulação e cálculo</b><small>para som automotivo</small></div>
+    <button class="ibtn" id="mbtn" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
 </header>
+<div class="menu" id="menu"><div class="bk"></div><div class="pn" id="mpn"></div></div>
 
 <main>
 <!-- ================= CAIXAS ================= -->
-<section class="tab on" id="t-caixas">
+<section class="tab on" id="t-caixas" data-name="Caixas" data-desc="Projeto de caixas seladas e dutadas">
+  <div class="dd"></div>
 
-<details open>
-<summary><div>Parâmetros do alto-falante<span>Thiele-Small — usados nas caixas abaixo</span></div></summary>
-<div class="body">
-  <div class="grid">
-    <div><label>Fs (Hz)</label><input id="fs" type="number" value="32" step="0.1"></div>
-    <div><label>Qts</label><input id="qts" type="number" value="0.45" step="0.01"></div>
-    <div><label>Vas (litros)</label><input id="vas" type="number" value="55" step="0.1"></div>
-    <div><label>Sd (cm²) <span class="pill">opcional</span></label><input id="sd" type="number" value="830"></div>
-    <div><label>Xmax (mm) <span class="pill">opcional</span></label><input id="xmax" type="number" value="12"></div>
-    <div><label>Volume deslocado pelo falante (L)</label><input id="vd" type="number" value="2.5" step="0.1"></div>
-  </div>
-  <div id="ebp" class="note"></div>
-</div>
-</details>
+  <details class="card" id="ts-card">
+    <summary><div class="t"><b>Parâmetros do alto-falante</b><small id="ts-sum"></small></div><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></summary>
+    <div class="in">
+      <div class="grid">
+        <div><label>Fs (Hz)</label><input id="fs" type="number" value="32" step="0.1"></div>
+        <div><label>Qts</label><input id="qts" type="number" value="0.45" step="0.01"></div>
+        <div><label>Vas (litros)</label><input id="vas" type="number" value="55" step="0.1"></div>
+        <div><label>Sd (cm²) <span class="pill">opcional</span></label><input id="sd" type="number" value="830"></div>
+        <div><label>Xmax (mm) <span class="pill">opcional</span></label><input id="xmax" type="number" value="12"></div>
+        <div><label>Deslocamento do falante (L)</label><input id="vd" type="number" value="2.5" step="0.1"></div>
+      </div>
+      <div id="ebp" class="note"></div>
+    </div>
+  </details>
 
-<details>
-<summary><div>Caixa selada<span>Volume, Qtc, F3 e curva de resposta</span></div></summary>
-<div class="body">
-  <div class="grid">
-    <div><label>Qtc desejado</label><input id="qtc" type="number" value="0.707" step="0.01"></div>
-    <div><label>Seu volume líquido (L) <span class="pill">opcional</span></label><input id="vbs" type="number" placeholder="usa o ideal"></div>
-  </div>
-  <div class="row"><button onclick="calcSelada()">Calcular</button></div>
-  <div class="out" id="o-sel"></div>
-  <canvas id="c-sel" height="230"></canvas>
-  <div class="note">Qtc 0,5–0,6: grave seco e estendido · 0,707: neutro (Butterworth) · 0,8–1,0: mais "punch", menos extensão.</div>
-</div>
-</details>
+  <article class="tool" data-id="selada" data-t="Caixa selada" data-s="Volume, Qtc, F3 e curva de resposta">
+    <div class="card">
+      <div class="grid">
+        <div><label>Qtc desejado</label><input id="qtc" type="number" value="0.707" step="0.01"></div>
+        <div><label>Seu volume líquido (L) <span class="pill">opcional</span></label><input id="vbs" type="number" placeholder="usa o ideal"></div>
+      </div>
+      <div class="row"><button onclick="calcSelada()">Calcular</button></div>
+      <div class="out" id="o-sel"></div>
+      <canvas id="c-sel" height="230"></canvas>
+      <div class="note">Qtc 0,5–0,6: grave seco e estendido · 0,707: neutro (Butterworth) · 0,8–1,0: mais "punch", menos extensão.</div>
+    </div>
+  </article>
 
-<details>
-<summary><div>Caixa dutada (bass reflex)<span>Volume, sintonia, duto e velocidade do ar</span></div></summary>
-<div class="body">
-  <div class="grid">
-    <div><label>Volume líquido (L) <span class="pill">vazio = sugerido</span></label><input id="vbp" type="number" placeholder="auto"></div>
-    <div><label>Sintonia Fb (Hz) <span class="pill">vazio = sugerido</span></label><input id="fbp" type="number" placeholder="auto"></div>
-    <div><label>Tipo de duto</label><select id="ptype" onchange="portUI()"><option value="r">Redondo (tubo)</option><option value="s">Retangular (slot)</option></select></div>
-    <div id="pr1"><label>Diâmetro interno (cm)</label><input id="pd" type="number" value="10"></div>
-    <div id="ps1" style="display:none"><label>Largura do slot (cm)</label><input id="pw" type="number" value="30"></div>
-    <div id="ps2" style="display:none"><label>Altura do slot (cm)</label><input id="ph" type="number" value="5"></div>
-    <div><label>Quantidade de dutos</label><input id="pn" type="number" value="1" min="1"></div>
-  </div>
-  <div class="row"><button onclick="calcDutada()">Calcular</button></div>
-  <div class="out" id="o-dut"></div>
-  <div id="a-dut"></div>
-  <canvas id="c-dut" height="230"></canvas>
-  <div class="legend"><span><em style="background:var(--acc)"></em>Dutada</span><span><em style="background:var(--acc2)"></em>Selada (Qtc 0,707)</span></div>
-  <div class="note">Sugestão automática pelo alinhamento de Keele (QB3). Curva de Small com perdas QL = 7, sem ganho de cabine. No carro, o ganho de cabine reforça bastante abaixo de ~60 Hz.</div>
-</div>
-</details>
+  <article class="tool" data-id="dutada" data-t="Caixa dutada" data-s="Bass reflex: volume, sintonia e duto">
+    <div class="card">
+      <div class="grid">
+        <div><label>Volume líquido (L) <span class="pill">vazio = auto</span></label><input id="vbp" type="number" placeholder="sugerido"></div>
+        <div><label>Sintonia Fb (Hz) <span class="pill">vazio = auto</span></label><input id="fbp" type="number" placeholder="sugerido"></div>
+        <div><label>Tipo de duto</label><select id="ptype" onchange="portUI()"><option value="r">Redondo (tubo)</option><option value="s">Retangular (slot)</option></select></div>
+        <div id="pr1"><label>Diâmetro interno (cm)</label><input id="pd" type="number" value="10"></div>
+        <div id="ps1" style="display:none"><label>Largura do slot (cm)</label><input id="pw" type="number" value="30"></div>
+        <div id="ps2" style="display:none"><label>Altura do slot (cm)</label><input id="ph" type="number" value="5"></div>
+        <div><label>Quantidade de dutos</label><input id="pn" type="number" value="1" min="1"></div>
+      </div>
+      <div class="row"><button onclick="calcDutada()">Calcular</button></div>
+      <div class="out" id="o-dut"></div>
+      <div id="a-dut"></div>
+      <canvas id="c-dut" height="230"></canvas>
+      <div class="legend"><span><em style="background:var(--acc)"></em>Dutada</span><span><em style="background:var(--acc2)"></em>Selada (Qtc 0,707)</span></div>
+      <div class="note">Sugestão automática pelo alinhamento de Keele (QB3). Curva de Small com perdas QL = 7, sem ganho de cabine — no carro, a cabine reforça bastante abaixo de ~60 Hz.</div>
+    </div>
+  </article>
 
-<details>
-<summary><div>Volume pela medida da caixa<span>Medidas externas → litros líquidos</span></div></summary>
-<div class="body">
-  <div class="grid">
-    <div><label>Largura externa (cm)</label><input id="bw" type="number" value="60"></div>
-    <div><label>Altura externa (cm)</label><input id="bh" type="number" value="40"></div>
-    <div><label>Profundidade externa (cm)</label><input id="bdp" type="number" value="40"></div>
-    <div><label>Espessura MDF (mm)</label><input id="bt" type="number" value="18"></div>
-    <div><label>Descontar (L) — falante, duto, reforços</label><input id="bdesc" type="number" value="0"></div>
-  </div>
-  <div class="row"><button onclick="calcVolume()">Calcular</button></div>
-  <div class="out" id="o-vol"></div>
-  <h3>Medidas para um volume desejado</h3>
-  <div class="grid">
-    <div><label>Volume líquido alvo (L)</label><input id="vt" type="number" value="50"></div>
-    <div><label>Profundidade fixa (cm) <span class="pill">opcional</span></label><input id="vtd" type="number" placeholder="proporção áurea"></div>
-  </div>
-  <div class="row"><button class="sec" onclick="calcMedidas()">Sugerir medidas</button></div>
-  <div class="out" id="o-med"></div>
-</div>
-</details>
+  <article class="tool" data-id="volume" data-t="Volume e medidas" data-s="Medidas do MDF ↔ litros">
+    <div class="card">
+      <h4>Medidas externas → litros</h4>
+      <div class="grid">
+        <div><label>Largura externa (cm)</label><input id="bw" type="number" value="60"></div>
+        <div><label>Altura externa (cm)</label><input id="bh" type="number" value="40"></div>
+        <div><label>Profundidade externa (cm)</label><input id="bdp" type="number" value="40"></div>
+        <div><label>Espessura do MDF (mm)</label><input id="bt" type="number" value="18"></div>
+        <div><label>Descontar (L) — falante, duto, reforços</label><input id="bdesc" type="number" value="0"></div>
+      </div>
+      <div class="row"><button onclick="calcVolume()">Calcular</button></div>
+      <div class="out" id="o-vol"></div>
+    </div>
+    <div class="card">
+      <h4>Litros → medidas sugeridas</h4>
+      <div class="grid">
+        <div><label>Volume líquido alvo (L)</label><input id="vt" type="number" value="50"></div>
+        <div><label>Profundidade fixa (cm) <span class="pill">opcional</span></label><input id="vtd" type="number" placeholder="proporção áurea"></div>
+      </div>
+      <div class="row"><button class="sec" onclick="calcMedidas()">Sugerir medidas</button></div>
+      <div class="out" id="o-med"></div>
+    </div>
+  </article>
+</section>
+
+<!-- ================= ASSOCIAÇÕES ================= -->
+<section class="tab" id="t-assoc" data-name="Associações" data-desc="Ligação de graves, médios, TI e cornetas no módulo">
+  <div class="dd"></div>
+  <article class="tool" data-id="graves" data-t="Graves (subwoofers)" data-s="SVC / DVC, série e paralelo"><div class="card" id="as-g"></div></article>
+  <article class="tool" data-id="medios" data-t="Médios / médio-graves" data-s="Ligação, potência e corte"><div class="card" id="as-m"></div></article>
+  <article class="tool" data-id="tweeters" data-t="Tweeters (TI)" data-s="Ligação e capacitor de proteção"><div class="card" id="as-t"></div></article>
+  <article class="tool" data-id="cornetas" data-t="Cornetas / drivers" data-s="Ligação, capacitor e atenuação (L-pad)"><div class="card" id="as-c"></div></article>
 </section>
 
 <!-- ================= ELÉTRICA ================= -->
-<section class="tab" id="t-eletrica">
-
-<details open>
-<summary><div>Ligação de subwoofers<span>Impedância final SVC / DVC, série / paralelo</span></div></summary>
-<div class="body">
-  <div class="grid">
-    <div><label>Quantidade de subs</label><input id="ns" type="number" value="2" min="1" max="8"></div>
-    <div><label>Bobina</label><select id="bob"><option value="1">Simples (SVC)</option><option value="2" selected>Dupla (DVC)</option></select></div>
-    <div><label>Ohms por bobina</label><select id="zb"><option>1</option><option selected>2</option><option>4</option><option>8</option></select></div>
-    <div><label>Impedância mínima do módulo (Ω)</label><input id="zmin" type="number" value="1" step="0.5"></div>
-  </div>
-  <div class="row"><button onclick="calcLigacao()">Ver ligações</button></div>
-  <div id="o-lig"></div>
-</div>
-</details>
-
-<details>
-<summary><div>Lei de Ohm e potência<span>Preencha 2 valores quaisquer</span></div></summary>
-<div class="body">
-  <div class="grid">
-    <div><label>Tensão V (V)</label><input id="ov" type="number"></div>
-    <div><label>Corrente I (A)</label><input id="oi" type="number"></div>
-    <div><label>Resistência R (Ω)</label><input id="or" type="number"></div>
-    <div><label>Potência P (W)</label><input id="op" type="number"></div>
-  </div>
-  <div class="row"><button onclick="calcOhm()">Calcular</button><button class="sec" onclick="['ov','oi','or','op'].forEach(i=>$(i).value='')">Limpar</button></div>
-  <div class="out" id="o-ohm"></div>
-</div>
-</details>
-
-<details>
-<summary><div>Consumo, cabo, fusível e capacitor<span>Dimensionamento da alimentação do módulo</span></div></summary>
-<div class="body">
-  <div class="grid">
-    <div><label>Potência RMS total (W)</label><input id="cp" type="number" value="2000"></div>
-    <div><label>Classe do módulo</label><select id="cc"><option value="0.8">Classe D (~80%)</option><option value="0.55">Classe AB (~55%)</option></select></div>
-    <div><label>Tensão do sistema (V)</label><input id="cv" type="number" value="13.8" step="0.1"></div>
-    <div><label>Comprimento do cabo positivo (m)</label><input id="cl" type="number" value="5" step="0.5"></div>
-    <div><label>Queda máxima aceitável (V)</label><input id="cdv" type="number" value="0.5" step="0.1"></div>
-    <div><label>Contar retorno pelo cabo negativo?</label><select id="cret"><option value="0">Não (terra curto no chassi)</option><option value="1">Sim (mesmo comprimento)</option></select></div>
-  </div>
-  <div class="row"><button onclick="calcCabo()">Calcular</button></div>
-  <div class="out" id="o-cab"></div>
-  <div id="a-cab"></div>
-</div>
-</details>
-
-<details>
-<summary><div>Alternador e bateria<span>Sobra de corrente e autonomia com motor desligado</span></div></summary>
-<div class="body">
-  <div class="grid">
-    <div><label>Alternador (A)</label><input id="alt" type="number" value="120"></div>
-    <div><label>Consumo do carro (A)</label><input id="acar" type="number" value="45"></div>
-    <div><label>Consumo do som (A)</label><input id="asom" type="number" value="150"></div>
-    <div><label>Bateria (Ah)</label><input id="bah" type="number" value="60"></div>
-  </div>
-  <div class="row"><button onclick="calcAlt()">Calcular</button></div>
-  <div class="out" id="o-alt"></div>
-  <div id="a-alt"></div>
-  <div class="note">O consumo do som com música real fica, em média, entre 1/8 e 1/3 do pico. A autonomia considera uso até 50% da carga da bateria.</div>
-</div>
-</details>
+<section class="tab" id="t-eletrica" data-name="Elétrica" data-desc="Alimentação e cálculos elétricos">
+  <div class="dd"></div>
+  <article class="tool" data-id="cabo" data-t="Cabo, fusível e capacitor" data-s="Dimensionar a alimentação do módulo">
+    <div class="card">
+      <div class="grid">
+        <div><label>Potência RMS total (W)</label><input id="cp" type="number" value="2000"></div>
+        <div><label>Classe do módulo</label><select id="cc"><option value="0.8">Classe D (~80%)</option><option value="0.55">Classe AB (~55%)</option></select></div>
+        <div><label>Tensão do sistema (V)</label><input id="cv" type="number" value="13.8" step="0.1"></div>
+        <div><label>Cabo positivo (m)</label><input id="cl" type="number" value="5" step="0.5"></div>
+        <div><label>Queda máxima (V)</label><input id="cdv" type="number" value="0.5" step="0.1"></div>
+        <div><label>Retorno pelo negativo?</label><select id="cret"><option value="0">Não (terra no chassi)</option><option value="1">Sim (mesmo comprimento)</option></select></div>
+      </div>
+      <div class="row"><button onclick="calcCabo()">Calcular</button></div>
+      <div class="out" id="o-cab"></div>
+      <div id="a-cab"></div>
+    </div>
+  </article>
+  <article class="tool" data-id="alternador" data-t="Alternador e bateria" data-s="Sobra de corrente e autonomia">
+    <div class="card">
+      <div class="grid">
+        <div><label>Alternador (A)</label><input id="alt" type="number" value="120"></div>
+        <div><label>Consumo do carro (A)</label><input id="acar" type="number" value="45"></div>
+        <div><label>Consumo do som (A)</label><input id="asom" type="number" value="150"></div>
+        <div><label>Bateria (Ah)</label><input id="bah" type="number" value="60"></div>
+      </div>
+      <div class="row"><button onclick="calcAlt()">Calcular</button></div>
+      <div class="out" id="o-alt"></div>
+      <div id="a-alt"></div>
+      <div class="note">Com música, o consumo médio fica entre 1/8 e 1/3 do pico. A autonomia considera usar até 50% da carga da bateria.</div>
+    </div>
+  </article>
+  <article class="tool" data-id="ohm" data-t="Lei de Ohm e potência" data-s="Preencha 2 valores quaisquer">
+    <div class="card">
+      <div class="grid">
+        <div><label>Tensão V (V)</label><input id="ov" type="number"></div>
+        <div><label>Corrente I (A)</label><input id="oi" type="number"></div>
+        <div><label>Resistência R (Ω)</label><input id="or" type="number"></div>
+        <div><label>Potência P (W)</label><input id="op" type="number"></div>
+      </div>
+      <div class="row"><button onclick="calcOhm()">Calcular</button><button class="sec" onclick="['ov','oi','or','op'].forEach(i=>$(i).value='');$('o-ohm').innerHTML=''">Limpar</button></div>
+      <div class="out" id="o-ohm"></div>
+    </div>
+  </article>
 </section>
 
 <!-- ================= AJUSTES ================= -->
-<section class="tab" id="t-ajustes">
-
-<details open>
-<summary><div>Ajuste de ganho por tensão<span>Tensão alvo na saída do módulo</span></div></summary>
-<div class="body">
-  <div class="grid">
-    <div><label>Potência RMS do módulo (W)</label><input id="gp" type="number" value="1000"></div>
-    <div><label>Impedância de carga (Ω)</label><input id="gz" type="number" value="2" step="0.5"></div>
-  </div>
-  <div class="row"><button onclick="calcGanho()">Calcular</button></div>
-  <div class="out" id="o-gan"></div>
-  <div class="note">Como fazer: desligue o falante, zere graves/loudness/EQ, coloque o tom de teste a 0 dB (50 Hz para sub, 1 kHz para médios) com o volume do rádio a ~80% do máximo sem distorção. Meça AC na saída do módulo e gire o ganho até a tensão alvo. O gerador está na aba <b>Sinais</b>.</div>
-</div>
-</details>
-
-<details>
-<summary><div>Crossover passivo<span>Valores de bobina e capacitor</span></div></summary>
-<div class="body">
-  <div class="grid">
-    <div><label>Frequência de corte (Hz)</label><input id="xf" type="number" value="3500"></div>
-    <div><label>Impedância do falante (Ω)</label><input id="xz" type="number" value="4"></div>
-    <div><label>Tipo</label><select id="xt"><option value="1">1ª ordem (6 dB/oit)</option><option value="bw">2ª ordem Butterworth (12 dB/oit)</option><option value="lr">2ª ordem Linkwitz-Riley (12 dB/oit)</option></select></div>
-  </div>
-  <div class="row"><button onclick="calcXover()">Calcular</button></div>
-  <div class="out" id="o-xo"></div>
-  <canvas id="c-xo" height="200"></canvas>
-  <div class="legend"><span><em style="background:var(--acc2)"></em>Passa-baixa</span><span><em style="background:var(--acc)"></em>Passa-alta</span><span><em style="background:#9aa4b4"></em>Soma</span></div>
-  <div class="note">Passa-alta (tweeter): capacitor em série e bobina em paralelo. Passa-baixa (médio/woofer): bobina em série e capacitor em paralelo. Fórmulas consideram impedância resistiva constante.</div>
-</div>
-</details>
-
-<details>
-<summary><div>Alinhamento temporal (delay)<span>Distâncias até o ouvinte → ms</span></div></summary>
-<div class="body">
-  <div class="grid" id="ta-in"></div>
-  <div class="row"><button onclick="calcDelay()">Calcular</button></div>
-  <div id="o-del"></div>
-  <div class="note">Meça do centro de cada falante até a altura da cabeça do motorista. O falante mais distante fica com 0 ms; os outros recebem o atraso. Velocidade do som: 343 m/s (20 °C).</div>
-</div>
-</details>
-
-<details>
-<summary><div>SPL e decibéis<span>Pressão sonora estimada e conversões</span></div></summary>
-<div class="body">
-  <div class="grid">
-    <div><label>Sensibilidade (dB 1W/1m)</label><input id="ss" type="number" value="88"></div>
-    <div><label>Potência aplicada (W)</label><input id="sp" type="number" value="500"></div>
-    <div><label>Quantidade de falantes iguais</label><input id="sn" type="number" value="1" min="1"></div>
-    <div><label>Distância (m)</label><input id="sdist" type="number" value="1" step="0.1"></div>
-  </div>
-  <div class="row"><button onclick="calcSPL()">Calcular</button></div>
-  <div class="out" id="o-spl"></div>
-  <h3>Conversão de dB</h3>
-  <div class="grid">
-    <div><label>Valor 1</label><input id="d1" type="number" value="100"></div>
-    <div><label>Valor 2</label><input id="d2" type="number" value="200"></div>
-    <div><label>Grandeza</label><select id="dk"><option value="10">Potência (10·log)</option><option value="20">Tensão/pressão (20·log)</option></select></div>
-  </div>
-  <div class="row"><button class="sec" onclick="calcDB()">Converter</button></div>
-  <div class="out" id="o-db"></div>
-  <div class="note">Estimativa em campo livre, sem ganho de cabine. Dobrar a potência = +3 dB · dobrar a distância = −6 dB · dobrar falantes com potência dobrada = +6 dB.</div>
-</div>
-</details>
+<section class="tab" id="t-ajustes" data-name="Ajustes" data-desc="Ganho, crossover, delay e SPL">
+  <div class="dd"></div>
+  <article class="tool" data-id="ganho" data-t="Ajuste de ganho" data-s="Tensão alvo na saída do módulo">
+    <div class="card">
+      <div class="grid">
+        <div><label>Potência RMS do módulo (W)</label><input id="gp" type="number" value="1000"></div>
+        <div><label>Impedância de carga (Ω)</label><input id="gz" type="number" value="2" step="0.5"></div>
+      </div>
+      <div class="row"><button onclick="calcGanho()">Calcular</button></div>
+      <div class="out" id="o-gan"></div>
+      <div class="note">Como fazer: desligue o falante, zere graves/loudness/EQ, coloque o tom de teste a 0 dB (50 Hz para sub, 1 kHz para médios) com o volume do rádio a ~80% do máximo sem distorção. Meça AC na saída do módulo e gire o ganho até a tensão alvo. O gerador está em <b>Sinais</b>.</div>
+    </div>
+  </article>
+  <article class="tool" data-id="crossover" data-t="Crossover passivo" data-s="Valores de bobina e capacitor">
+    <div class="card">
+      <div class="grid">
+        <div><label>Frequência de corte (Hz)</label><input id="xf" type="number" value="3500"></div>
+        <div><label>Impedância do falante (Ω)</label><input id="xz" type="number" value="4"></div>
+        <div><label>Tipo</label><select id="xt"><option value="1">1ª ordem (6 dB/oit)</option><option value="bw">2ª Butterworth (12 dB/oit)</option><option value="lr">2ª Linkwitz-Riley (12 dB/oit)</option></select></div>
+      </div>
+      <div class="row"><button onclick="calcXover()">Calcular</button></div>
+      <div class="out" id="o-xo"></div>
+      <canvas id="c-xo" height="200"></canvas>
+      <div class="legend"><span><em style="background:var(--acc2)"></em>Passa-baixa</span><span><em style="background:var(--acc)"></em>Passa-alta</span><span><em style="background:#9aa4b4"></em>Soma</span></div>
+      <div class="note">Passa-alta (tweeter): capacitor em série e bobina em paralelo. Passa-baixa (médio/woofer): bobina em série e capacitor em paralelo. Em 2ª ordem, inverta a polaridade do tweeter.</div>
+    </div>
+  </article>
+  <article class="tool" data-id="delay" data-t="Alinhamento temporal" data-s="Distância até o ouvinte → delay">
+    <div class="card">
+      <div class="grid" id="ta-in"></div>
+      <div class="row"><button onclick="calcDelay()">Calcular</button></div>
+      <div id="o-del" class="tw"></div>
+      <div class="note">Meça do centro de cada falante até a cabeça do motorista. O mais distante fica com 0 ms; os outros recebem o atraso (som a 343 m/s).</div>
+    </div>
+  </article>
+  <article class="tool" data-id="spl" data-t="SPL e decibéis" data-s="Pressão sonora e conversões">
+    <div class="card">
+      <h4>SPL estimado</h4>
+      <div class="grid">
+        <div><label>Sensibilidade (dB 1W/1m)</label><input id="ss" type="number" value="88"></div>
+        <div><label>Potência total (W)</label><input id="sp" type="number" value="500"></div>
+        <div><label>Falantes iguais</label><input id="sn" type="number" value="1" min="1"></div>
+        <div><label>Distância (m)</label><input id="sdist" type="number" value="1" step="0.1"></div>
+      </div>
+      <div class="row"><button onclick="calcSPL()">Calcular</button></div>
+      <div class="out" id="o-spl"></div>
+    </div>
+    <div class="card">
+      <h4>Conversão de dB</h4>
+      <div class="grid">
+        <div><label>Valor 1</label><input id="d1" type="number" value="100"></div>
+        <div><label>Valor 2</label><input id="d2" type="number" value="200"></div>
+        <div><label>Grandeza</label><select id="dk"><option value="10">Potência (10·log)</option><option value="20">Tensão/pressão (20·log)</option></select></div>
+      </div>
+      <div class="row"><button class="sec" onclick="calcDB()">Converter</button></div>
+      <div class="out" id="o-db"></div>
+      <div class="note">Dobrar a potência = +3 dB · dobrar a distância = −6 dB · estimativa sem ganho de cabine.</div>
+    </div>
+  </article>
 </section>
 
 <!-- ================= SINAIS ================= -->
-<section class="tab" id="t-sinais">
-
-<details open>
-<summary><div>Gerador de sinais<span>Tons, ruído rosa e varredura pelo celular</span></div></summary>
-<div class="body">
-  <div class="grid">
-    <div><label>Sinal</label><select id="gw" onchange="genUpdate()"><option value="sine">Senoidal</option><option value="square">Quadrada</option><option value="triangle">Triangular</option><option value="sawtooth">Dente de serra</option><option value="pink">Ruído rosa</option><option value="white">Ruído branco</option><option value="sweep">Varredura (sweep)</option></select></div>
-    <div><label>Frequência: <b id="gfv">50 Hz</b></label><input id="gf" type="range" min="0" max="1000" value="212" oninput="genUpdate()"></div>
-    <div><label>Volume: <b id="gvv">50%</b></label><input id="gv" type="range" min="0" max="100" value="50" oninput="genUpdate()"></div>
-  </div>
-  <div class="grid" id="sw-ui" style="display:none;margin-top:10px">
-    <div><label>Sweep de (Hz)</label><input id="sw1" type="number" value="20"></div>
-    <div><label>até (Hz)</label><input id="sw2" type="number" value="200"></div>
-    <div><label>Duração (s)</label><input id="swt" type="number" value="10"></div>
-  </div>
-  <div class="row">
-    <button id="gbtn" onclick="genToggle()">▶ Tocar</button>
-    <button class="sec" onclick="setF(40)">40 Hz</button><button class="sec" onclick="setF(50)">50 Hz</button><button class="sec" onclick="setF(1000)">1 kHz</button>
-  </div>
-  <div class="note">Para ajuste de ganho, conecte o celular na entrada auxiliar/Bluetooth com o volume do celular no máximo e o volume aqui em 100% (0 dB). Comece sempre com o volume do rádio baixo.</div>
-</div>
-</details>
-
-<details>
-<summary><div>Simulador de clipping (osciloscópio)<span>Veja o sinal do módulo saturar</span></div></summary>
-<div class="body">
-  <div class="grid">
-    <div><label>Potência RMS do módulo (W)</label><input id="kp" type="number" value="1000" oninput="drawScope()"></div>
-    <div><label>Carga (Ω)</label><input id="kz" type="number" value="2" step="0.5" oninput="drawScope()"></div>
-    <div><label>Frequência (Hz)</label><input id="kf" type="number" value="50" oninput="drawScope()"></div>
-    <div><label>Ganho: <b id="kgv">100%</b></label><input id="kg" type="range" min="10" max="300" value="100" oninput="drawScope()"></div>
-  </div>
-  <canvas id="c-sc" height="220"></canvas>
-  <div class="out" id="o-sc"></div>
-  <div id="a-sc"></div>
-  <div class="note">100% = ganho no ponto exato da potência nominal. Acima disso a onda achata (clipping), a potência média sobe e vira calor na bobina — principal causa de queima de falantes.</div>
-</div>
-</details>
-
-<details>
-<summary><div>Analisador de espectro (RTA)<span>Microfone do celular em 1/3 de oitava</span></div></summary>
-<div class="body">
-  <div class="row"><button id="rbtn" onclick="rtaToggle()">🎤 Iniciar microfone</button><button class="sec" onclick="rtaHold=!rtaHold;this.textContent=rtaHold?'Liberar':'Congelar'">Congelar</button></div>
-  <canvas id="c-rta" height="240"></canvas>
-  <div class="out" id="o-rta"></div>
-  <div class="note">Use com ruído rosa para ver o equilíbrio do sistema. O microfone do celular não é calibrado e corta graves profundos — serve para comparação e tendência, não para medição absoluta.</div>
-</div>
-</details>
-
-<details>
-<summary><div>Sinais elétricos: RMS, pico e pico-a-pico<span>Conversões para medição com multímetro e osciloscópio</span></div></summary>
-<div class="body">
-  <div class="grid">
-    <div><label>Valor medido (V)</label><input id="rv" type="number" value="44.7"></div>
-    <div><label>O valor é</label><select id="rk"><option value="rms">RMS</option><option value="pk">Pico</option><option value="pp">Pico-a-pico</option></select></div>
-    <div><label>Forma de onda</label><select id="rf"><option value="sine">Senoidal</option><option value="sq">Quadrada</option><option value="tri">Triangular</option></select></div>
-    <div><label>Carga (Ω) <span class="pill">opcional</span></label><input id="rz" type="number" value="2"></div>
-  </div>
-  <div class="row"><button onclick="calcRMS()">Converter</button></div>
-  <div class="out" id="o-rms"></div>
-</div>
-</details>
+<section class="tab" id="t-sinais" data-name="Sinais" data-desc="Gerador, osciloscópio e analisador">
+  <div class="dd"></div>
+  <article class="tool" data-id="gerador" data-t="Gerador de sinais" data-s="Tons, ruído rosa e varredura">
+    <div class="card">
+      <div class="grid">
+        <div><label>Sinal</label><select id="gw" onchange="genUpdate()"><option value="sine">Senoidal</option><option value="square">Quadrada</option><option value="triangle">Triangular</option><option value="sawtooth">Dente de serra</option><option value="pink">Ruído rosa</option><option value="white">Ruído branco</option><option value="sweep">Varredura (sweep)</option></select></div>
+        <div><label>Frequência: <b id="gfv">50 Hz</b></label><input id="gf" type="range" min="0" max="1000" value="212" oninput="genUpdate()"></div>
+        <div><label>Volume: <b id="gvv">50%</b></label><input id="gv" type="range" min="0" max="100" value="50" oninput="genUpdate()"></div>
+      </div>
+      <div class="grid" id="sw-ui" style="display:none;margin-top:10px">
+        <div><label>Sweep de (Hz)</label><input id="sw1" type="number" value="20"></div>
+        <div><label>até (Hz)</label><input id="sw2" type="number" value="200"></div>
+        <div><label>Duração (s)</label><input id="swt" type="number" value="10"></div>
+      </div>
+      <div class="row">
+        <button id="gbtn" onclick="genToggle()">▶ Tocar</button>
+        <button class="sec" onclick="setF(40)">40 Hz</button><button class="sec" onclick="setF(50)">50 Hz</button><button class="sec" onclick="setF(1000)">1 kHz</button>
+      </div>
+      <div class="note">Para ajuste de ganho, ligue o celular no auxiliar/Bluetooth com o volume do celular no máximo e aqui em 100% (0 dB). Comece com o volume do rádio baixo.</div>
+    </div>
+  </article>
+  <article class="tool" data-id="clipping" data-t="Simulador de clipping" data-s="Osciloscópio: veja o sinal saturar">
+    <div class="card">
+      <div class="grid">
+        <div><label>Potência RMS do módulo (W)</label><input id="kp" type="number" value="1000" oninput="drawScope()"></div>
+        <div><label>Carga (Ω)</label><input id="kz" type="number" value="2" step="0.5" oninput="drawScope()"></div>
+        <div><label>Frequência (Hz)</label><input id="kf" type="number" value="50" oninput="drawScope()"></div>
+        <div><label>Ganho: <b id="kgv">100%</b></label><input id="kg" type="range" min="10" max="300" value="100" oninput="drawScope()"></div>
+      </div>
+      <canvas id="c-sc" height="220"></canvas>
+      <div class="out" id="o-sc"></div>
+      <div id="a-sc"></div>
+      <div class="note">100% = ganho no ponto exato da potência nominal. Acima disso a onda achata (clipping) e o excesso vira calor na bobina — principal causa de queima.</div>
+    </div>
+  </article>
+  <article class="tool" data-id="rta" data-t="Analisador de espectro" data-s="RTA pelo microfone em 1/3 de oitava">
+    <div class="card">
+      <div class="row" style="margin-top:0"><button id="rbtn" onclick="rtaToggle()">🎤 Iniciar microfone</button><button class="sec" onclick="rtaHold=!rtaHold;this.textContent=rtaHold?'Liberar':'Congelar'">Congelar</button></div>
+      <canvas id="c-rta" height="240"></canvas>
+      <div class="out" id="o-rta"></div>
+      <div class="note">Use com ruído rosa para ver o equilíbrio do sistema. O microfone do celular não é calibrado e corta graves profundos: serve para comparar, não para medir valor absoluto.</div>
+    </div>
+  </article>
+  <article class="tool" data-id="rms" data-t="RMS, pico e pico-a-pico" data-s="Conversões para multímetro e osciloscópio">
+    <div class="card">
+      <div class="grid">
+        <div><label>Valor medido (V)</label><input id="rv" type="number" value="44.7"></div>
+        <div><label>O valor é</label><select id="rk"><option value="rms">RMS</option><option value="pk">Pico</option><option value="pp">Pico-a-pico</option></select></div>
+        <div><label>Forma de onda</label><select id="rf"><option value="sine">Senoidal</option><option value="sq">Quadrada</option><option value="tri">Triangular</option></select></div>
+        <div><label>Carga (Ω) <span class="pill">opcional</span></label><input id="rz" type="number" value="2"></div>
+      </div>
+      <div class="row"><button onclick="calcRMS()">Converter</button></div>
+      <div class="out" id="o-rms"></div>
+    </div>
+  </article>
 </section>
 </main>
 
-<nav>
+<nav><div class="nw">
   <button class="on" data-t="caixas"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="14" r="4"/><circle cx="12" cy="7" r="1.3"/></svg>Caixas</button>
+  <button data-t="assoc"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="3.5"/><circle cx="18" cy="12" r="3.5"/><path d="M9.5 12h5"/></svg>Associações</button>
   <button data-t="eletrica"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>Elétrica</button>
   <button data-t="ajustes"><svg viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>Ajustes</button>
   <button data-t="sinais"><svg viewBox="0 0 24 24"><path d="M2 12h3l3-8 4 16 3-8h7"/></svg>Sinais</button>
-</nav>
+</div></nav>
 
 <script>
 "use strict";
@@ -355,13 +411,6 @@ const f=(x,d=1)=>isFinite(x)?x.toLocaleString('pt-BR',{minimumFractionDigits:d,m
 const kv=(label,val,unit='')=>`<div class="kv"><i>${label}</i><b>${val}</b> ${unit}</div>`;
 const al=(cls,txt)=>`<div class="alert ${cls}">${txt}</div>`;
 const LOG10=Math.log10;
-
-/* ---------- navegação ---------- */
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
-  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));
-  document.querySelectorAll('section.tab').forEach(s=>s.classList.toggle('on',s.id==='t-'+b.dataset.t));
-  scrollTo(0,0); setTimeout(redrawAll,30);
-});
 
 /* ---------- gráfico de resposta (log) ---------- */
 function setupCanvas(c){
@@ -458,19 +507,6 @@ function calcMedidas(){
 }
 
 /* ---------- elétrica ---------- */
-function calcLigacao(){
-  const n=Math.max(1,Math.round(v('ns'))),dvc=$('bob').value==='2',z=v('zb'),zmin=v('zmin')||0;
-  const combos=[];
-  const bobs=dvc?[['série',2*z],['paralelo',z/2]]:[['—',z]];
-  bobs.forEach(([bl,zs])=>{
-    combos.push({b:bl,s:'série',z:zs*n});
-    if(n>1)combos.push({b:bl,s:'paralelo',z:zs/n});
-    // pares em série, pares ligados em paralelo
-    if(n>=4&&n%2===0)combos.push({b:bl,s:'série-paralelo (pares)',z:(2*zs)/(n/2)});
-  });
-  let rows=combos.map(c=>{const okz=c.z>=zmin;return `<tr><td>${dvc?'Bobinas em '+c.b:'SVC'}</td><td>${n>1?'Subs em '+c.s:'1 sub'}</td><td style="color:${okz?'var(--ok)':'var(--bad)'}"><b>${f(c.z,2)} Ω</b></td></tr>`}).join('');
-  $('o-lig').innerHTML=`<table><tr><th>Bobinas</th><th>Entre subs</th><th>Final</th></tr>${rows}</table>`+al('warn','Em verde as ligações que o módulo aguenta (≥ '+f(zmin,1)+' Ω). Nunca ligue as duas bobinas de um DVC em módulos diferentes sem bridge correto.');
-}
 function calcOhm(){
   let V=v('ov'),I=v('oi'),R=v('or'),P=v('op');const has=[V,I,R,P].filter(isFinite).length;
   if(has<2){$('o-ohm').innerHTML=al('bad','Preencha pelo menos 2 campos.');return}
@@ -624,9 +660,141 @@ function calcRMS(){
 /* ---------- inicialização ---------- */
 function redrawAll(){showEBP();calcSelada();calcDutada();calcXover();drawScope()}
 ['fs','qts','vas','sd','xmax','vd'].forEach(id=>$(id).addEventListener('input',()=>{showEBP();calcSelada();calcDutada()}));
-document.querySelectorAll('details').forEach(d=>d.addEventListener('toggle',()=>d.open&&setTimeout(redrawAll,20)));
 addEventListener('resize',()=>setTimeout(redrawAll,50));
-redrawAll();calcVolume();calcMedidas();calcLigacao();calcCabo();calcAlt();calcGanho();calcDelay();calcSPL();calcDB();calcRMS();genUpdate();
+redrawAll();calcVolume();calcMedidas();calcCabo();calcAlt();calcGanho();calcDelay();calcSPL();calcDB();calcRMS();genUpdate();
+
+/* ================= ASSOCIAÇÕES ================= */
+const ASSOC={
+  g:{label:'subwoofer',plural:'subs',n:2,z:2,zopts:[1,2,4,8],dvc:true,rms:600,ap:1200,az:2,zmin:1,
+     tip:'Corte passa-baixa entre 60 e 90 Hz. Use subsônico (passa-alta) 5–8 Hz abaixo da sintonia da caixa dutada, ou ~25 Hz na selada.'},
+  m:{label:'médio',plural:'médios',n:4,z:4,zopts:[2,4,8],rms:200,ap:800,az:2,zmin:2,
+     tip:'Médio-grave 6"–8": passa-alta entre 80 e 120 Hz. Médio como faixa média (com sub e driver/TI): passa-faixa de ~250 Hz a 3,5 kHz.'},
+  t:{label:'tweeter',plural:'tweeters',n:4,z:8,zopts:[4,6,8],rms:100,ap:400,az:4,zmin:2,cut:4000,
+     tip:'Corte entre 3,5 e 5 kHz. Tweeter nunca pode receber grave: use sempre capacitor ou corte ativo no processador/módulo.'},
+  c:{label:'driver',plural:'drivers',n:2,z:8,zopts:[4,8,16],rms:100,ap:400,az:4,zmin:2,cut:2000,sc:108,sm:95,
+     tip:'Driver de titânio em corneta: corte entre 1,5 e 3 kHz, conforme a corneta (corneta menor pede corte mais alto). Nunca ligue driver sem corte.'}
+};
+const CAPS=[0.47,0.68,1,1.5,2.2,2.7,3.3,3.9,4.7,5.6,6.8,8.2,10,12,15,18,22,27,33,39,47];
+const RES=[1,1.2,1.5,1.8,2.2,2.7,3.3,3.9,4.7,5.6,6.8,8.2,10,12,15,18,22,27,33,39,47];
+const near=(arr,x)=>arr.reduce((a,b)=>Math.abs(Math.log(b/x))<Math.abs(Math.log(a/x))?b:a);
+
+function buildAssoc(k){
+  const c=ASSOC[k],P=c.plural;
+  let h=`<h4>${P[0].toUpperCase()+P.slice(1)}</h4><div class="grid">
+    <div><label>Quantidade de ${P}</label><input id="${k}n" type="number" min="1" max="16" value="${c.n}"></div>
+    ${c.dvc?`<div><label>Bobina</label><select id="${k}bob"><option value="1">Simples (SVC)</option><option value="2" selected>Dupla (DVC)</option></select></div>`:''}
+    <div><label>${c.dvc?'Ohms por bobina':'Impedância de cada '+c.label}</label><select id="${k}z">${c.zopts.map(z=>`<option${z===c.z?' selected':''}>${z}</option>`).join('')}</select></div>
+    <div><label>Potência RMS de cada ${c.label} (W)</label><input id="${k}rms" type="number" value="${c.rms}"></div>
+  </div>
+  <h3>Módulo (canal que vai ligar)</h3><div class="grid">
+    <div><label>Potência RMS (W)</label><input id="${k}ap" type="number" value="${c.ap}"></div>
+    <div><label>…nessa impedância (Ω)</label><input id="${k}az" type="number" value="${c.az}" step="0.5"></div>
+    <div><label>Impedância mínima (Ω)</label><input id="${k}zmin" type="number" value="${c.zmin}" step="0.5"></div>
+  </div>`;
+  if(k==='t'||k==='c')h+=`<h3>Proteção e corte</h3><div class="grid">
+    <div><label>Frequência de corte (Hz)</label><input id="${k}cut" type="number" value="${c.cut}"></div>
+    ${k==='c'?`<div><label>Sensibilidade da corneta (dB)</label><input id="csc" type="number" value="${c.sc}"></div>
+    <div><label>Sensibilidade dos médios (dB)</label><input id="csm" type="number" value="${c.sm}"></div>`:''}
+  </div>`;
+  h+=`<div class="row"><button onclick="calcAssoc('${k}')">Ver associações</button></div><div id="${k}-o"></div>`;
+  $('as-'+k).innerHTML=h;
+}
+function stat(r,okz){
+  if(!okz)return['bad','Módulo não aguenta'];
+  if(r<0.5)return['info','Pouca potência'];
+  if(r<0.8)return['ok','Seguro (abaixo)'];
+  if(r<=1.25)return['ok','Ideal'];
+  if(r<=1.6)return['warn','Acima: cuidado c/ ganho'];
+  return['bad','Risco de queima'];
+}
+function calcAssoc(k){
+  const c=ASSOC[k],n=Math.max(1,Math.round(v(k+'n'))),z=v(k+'z'),rms=v(k+'rms'),ap=v(k+'ap'),az=v(k+'az'),zmin=v(k+'zmin')||0;
+  const coils=(c.dvc&&$(k+'bob').value==='2')?[['bobinas em série',2*z],['bobinas em paralelo',z/2]]:[['',z]];
+  const divs=[];for(let i=1;i<=n;i++)if(n%i===0)divs.push(i);
+  const list=[];
+  coils.forEach(([cl,zs])=>divs.forEach(s=>{
+    const m=n/s,Z=s*zs/m;
+    let lab=n===1?'1 '+c.label:s===n?'Todos em série':s===1?'Todos em paralelo':`${m} grupos de ${s} em série, ligados em paralelo`;
+    const Pt=ap*az/Z,per=Pt/n,r=per/rms,okz=Z>=zmin-1e-9;
+    list.push({lab,cl,Z,Pt,per,r,okz});
+  }));
+  const ok=list.filter(x=>x.okz);
+  const sc=x=>x.r>1?2*Math.log(x.r):-Math.log(x.r); // passar do RMS pesa mais que ficar abaixo
+  const best=ok.length?ok.reduce((a,b)=>sc(b)<sc(a)?b:a):null;
+  let h='<div class="tw"><table><tr><th>Ligação</th><th>Final</th><th>W / '+c.label+'</th><th>Situação</th></tr>'+
+    list.map(x=>{const [cls,t]=stat(x.r,x.okz);return `<tr class="${x===best?'best':''}"><td>${x.lab}${x.cl?'<br><small style="color:var(--mut)">'+x.cl+'</small>':''}</td><td><b>${f(x.Z,2)} Ω</b></td><td>${x.okz?f(x.per,0):'—'}</td><td><span class="tag ${cls}">${t}</span></td></tr>`}).join('')+'</table></div>';
+  if(best){
+    h+=`<div class="out">${kv('Melhor ligação',f(best.Z,2),'Ω')}${kv('Potência por '+c.label,f(best.per,0),'W')}${kv('Total estimado do módulo',f(best.Pt,0),'W')}</div>`;
+    h+=al('ok',`Recomendado: <b>${best.lab}${best.cl?' ('+best.cl+')':''}</b> → ${f(best.Z,2)} Ω.`);
+  }else h+=al('bad','Nenhuma ligação fica acima da impedância mínima do módulo. Use outro módulo ou divida em mais canais.');
+
+  if((k==='t'||k==='c')&&best){
+    const fc=v(k+'cut'),cInd=1e6/(2*Math.PI*fc*z),cGrp=1e6/(2*Math.PI*fc*best.Z);
+    h+=`<h3>Capacitor de proteção (1ª ordem, ${f(fc,0)} Hz)</h3><div class="out">
+      ${kv('Um por '+c.label+' ('+f(z,0)+' Ω)',f(cInd,2),'µF')}${kv('Comercial mais próximo',f(near(CAPS,cInd),2),'µF')}
+      ${kv('Um só para o grupo ('+f(best.Z,2)+' Ω)',f(cGrp,2),'µF')}${kv('Comercial mais próximo',f(near(CAPS,cGrp),2),'µF')}</div>
+      <div class="note">Use capacitor de poliéster ou polipropileno <b>não polarizado</b>, 100 V ou mais, em série com o positivo. Um capacitor por ${c.label} é o mais seguro.</div>`;
+  }
+  if(k==='c'&&best){
+    const att=v('csc')-v('csm');
+    if(att>0.5){const a=Math.pow(10,-att/20),Z=best.Z,Rs=Z*(1-a),Rp=Z*a/(1-a);
+      h+=`<h3>Atenuação L-pad (−${f(att,1)} dB)</h3><div class="out">
+        ${kv('Resistor em série (Rs)',f(Rs,2),'Ω')}${kv('Comercial',f(near(RES,Rs),1),'Ω')}${kv('Resistor em paralelo (Rp)',f(Rp,2),'Ω')}${kv('Comercial',f(near(RES,Rp),1),'Ω')}</div>
+        <div class="note">A corneta toca ${f(att,1)} dB mais alto que os médios. Rs vai em série depois do capacitor; Rp em paralelo com o(s) driver(s). Use resistores de fio de 10 W ou mais. Calculado para a carga de ${f(Z,2)} Ω.</div>`;
+    }else h+=al('ok','Corneta e médios têm sensibilidade parecida: não precisa de L-pad.');
+  }
+  h+=al('info',c.tip)+'<div class="note">Potência estimada considerando que o módulo entrega '+f(ap,0)+' W em '+f(az,1)+' Ω e que a tensão de saída se mantém (P ∝ 1/Z). Não misture '+c.plural+' de impedâncias ou modelos diferentes na mesma ligação e mantenha a mesma polaridade em todos.</div>';
+  $(k+'-o').innerHTML=h;
+}
+['g','m','t','c'].forEach(k=>{buildAssoc(k);calcAssoc(k)});
+
+/* ================= MENUS E NAVEGAÇÃO ================= */
+const CHEV='<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>';
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,x){try{localStorage.setItem(k,x)}catch(e){}}};
+const SECS=[...document.querySelectorAll('section.tab')];
+const catOf=s=>s.id.slice(2);
+const toolsOf=s=>[...s.querySelectorAll('.tool')];
+const navIcon=cat=>document.querySelector(`nav button[data-t="${cat}"] svg`).outerHTML;
+let curCat='caixas';const curTool={};
+
+function buildDD(s){
+  const cat=catOf(s),dd=s.querySelector('.dd');
+  dd.innerHTML=`<button class="dd-btn"><div class="t"><i>${s.dataset.name}</i><b></b><small></small></div>${CHEV}</button>
+    <div class="dd-list">${toolsOf(s).map(t=>`<button class="dd-it" data-id="${t.dataset.id}"><span class="dot"></span><span><b>${t.dataset.t}</b><small>${t.dataset.s}</small></span></button>`).join('')}</div>`;
+  dd.querySelector('.dd-btn').onclick=e=>{e.stopPropagation();const o=dd.classList.contains('open');closeDD();if(!o)dd.classList.add('open')};
+  dd.querySelectorAll('.dd-it').forEach(b=>b.onclick=e=>{e.stopPropagation();closeDD();showTool(cat,b.dataset.id)});
+}
+function closeDD(){document.querySelectorAll('.dd.open').forEach(d=>d.classList.remove('open'))}
+document.addEventListener('click',closeDD);
+
+function showTool(cat,id){
+  const s=$('t-'+cat),ts=toolsOf(s);let t=ts.find(x=>x.dataset.id===id)||ts[0];id=t.dataset.id;
+  ts.forEach(x=>x.classList.toggle('on',x===t));
+  const dd=s.querySelector('.dd');dd.querySelector('.dd-btn b').textContent=t.dataset.t;dd.querySelector('.dd-btn small').textContent=t.dataset.s;
+  dd.querySelectorAll('.dd-it').forEach(b=>b.classList.toggle('cur',b.dataset.id===id));
+  if(cat==='caixas')$('ts-card').style.display=(id==='selada'||id==='dutada')?'':'none';
+  curTool[cat]=id;store.set('jp-tool-'+cat,id);buildMenu();setTimeout(redrawAll,20);
+}
+function showTab(cat){
+  curCat=cat;SECS.forEach(s=>s.classList.toggle('on',catOf(s)===cat));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===cat));
+  store.set('jp-cat',cat);closeDD();scrollTo(0,0);buildMenu();setTimeout(redrawAll,20);
+}
+function buildMenu(){
+  $('mpn').innerHTML=SECS.map(s=>{const cat=catOf(s);return `<div class="mg">${navIcon(cat)}${s.dataset.name}</div>`+
+    toolsOf(s).map(t=>`<button class="mi${cat===curCat&&curTool[cat]===t.dataset.id?' cur':''}" data-c="${cat}" data-id="${t.dataset.id}">${t.dataset.t}</button>`).join('')}).join('');
+  $('mpn').querySelectorAll('.mi').forEach(b=>b.onclick=()=>{menu(false);showTab(b.dataset.c);showTool(b.dataset.c,b.dataset.id)});
+}
+function menu(on){$('menu').classList.toggle('on',on);document.body.classList.toggle('lock',on)}
+$('mbtn').onclick=()=>menu(!$('menu').classList.contains('on'));
+$('menu').querySelector('.bk').onclick=()=>menu(false);
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>showTab(b.dataset.t));
+
+function tsSum(){$('ts-sum').textContent=`Fs ${$('fs').value} Hz · Qts ${$('qts').value} · Vas ${$('vas').value} L — toque para editar`}
+SECS.forEach(s=>{buildDD(s);showTool(catOf(s),store.get('jp-tool-'+catOf(s)))});
+showTab(store.get('jp-cat')||'caixas');
+tsSum();['fs','qts','vas'].forEach(id=>$(id).addEventListener('input',tsSum));
+
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
