@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d0f14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>JPSOM — Som Automotivo</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{
+  --bg:#0d0f14;--card:#161a22;--card2:#1d222c;--line:#2a313d;
+  --tx:#e9edf3;--mut:#8f9aab;--acc:#e3262e;--acc2:#28c7fa;--ok:#3ddc84;--warn:#ffc53d;--bad:#ff4d5e;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px}
+body{padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+header{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,#0d0f14 80%,#0d0f1400);padding:calc(10px + env(safe-area-inset-top)) 16px 10px;display:flex;align-items:center;gap:12px;max-width:760px;margin:0 auto}
+header .logo{height:64px;width:auto;border-radius:12px;background:#fff;display:block}
+header small{color:var(--mut);font-size:12px;line-height:1.35}
+main{max-width:760px;margin:0 auto;padding:4px 12px}
+section.tab{display:none}section.tab.on{display:block}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:10px 0;overflow:hidden}
+summary{list-style:none;cursor:pointer;padding:14px 16px;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--acc);font-size:20px}
+details[open] summary::after{content:"–"}
+summary span{font-weight:400;color:var(--mut);font-size:12px;display:block}
+.body{padding:0 16px 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+label{display:block;font-size:12px;color:var(--mut);margin-bottom:4px}
+input,select{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--tx);border-radius:10px;padding:10px;font-size:15px}
+input:focus,select:focus{outline:2px solid var(--acc);border-color:transparent}
+input[type=range]{padding:0;accent-color:var(--acc)}
+button{background:var(--acc);color:#fff;border:0;border-radius:10px;padding:11px 16px;font-size:15px;font-weight:600;cursor:pointer}
+button.sec{background:var(--card2);border:1px solid var(--line);color:var(--tx)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.out{margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.kv{background:var(--card2);border-radius:10px;padding:10px}
+.kv i{font-style:normal;font-size:11px;color:var(--mut);display:block}
+.kv b{font-size:18px;color:var(--acc2)}
+.note{font-size:12.5px;color:var(--mut);margin-top:10px;line-height:1.5}
+.alert{margin-top:10px;padding:10px;border-radius:10px;font-size:13px;line-height:1.45}
+.alert.ok{background:#3ddc8418;color:var(--ok)}.alert.warn{background:#ffc53d18;color:var(--warn)}.alert.bad{background:#ff4d5e18;color:var(--bad)}
+canvas{width:100%;background:#0a0c10;border:1px solid var(--line);border-radius:10px;margin-top:12px;display:block}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--mut);margin-top:6px;flex-wrap:wrap}
+.legend em{font-style:normal;display:inline-block;width:12px;height:3px;border-radius:2px;margin-right:5px;vertical-align:middle}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}
+th,td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--mut);font-weight:500}
+h3{font-size:13px;color:var(--acc);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.5px}
+nav{position:fixed;bottom:0;left:0;right:0;background:#11141bf2;border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom);backdrop-filter:blur(8px);z-index:9}
+nav button{flex:1;background:none;color:var(--mut);border-radius:0;padding:9px 2px 8px;font-size:11px;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px}
+nav button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button.on{color:var(--acc)}
+.big{font-size:26px!important}
+.pill{display:inline-block;padding:2px 8px;border-radius:20px;background:var(--card2);font-size:11px;color:var(--mut);margin-left:6px}
+</style>
+</head>
+<body>
+<header>
+  <img class="logo" src="logo.png" alt="JPSOM — Instalação e Acessórios">
+  <small>Simulação e cálculo<br>para som automotivo</small>
+</header>
+
+<main>
+<!-- ================= CAIXAS ================= -->
+<section class="tab on" id="t-caixas">
+
+<details open>
+<summary><div>Parâmetros do alto-falante<span>Thiele-Small — usados nas caixas abaixo</span></div></summary>
+<div class="body">
+  <div class="grid">
+    <div><label>Fs (Hz)</label><input id="fs" type="number" value="32" step="0.1"></div>
+    <div><label>Qts</label><input id="qts" type="number" value="0.45" step="0.01"></div>
+    <div><label>Vas (litros)</label><input id="vas" type="number" value="55" step="0.1"></div>
+    <div><label>Sd (cm²) <span class="pill">opcional</span></label><input id="sd" type="number" value="830"></div>
+    <div><label>Xmax (mm) <span class="pill">opcional</span></label><input id="xmax" type="number" value="12"></div>
+    <div><label>Volume deslocado pelo falante (L)</label><input id="vd" type="number" value="2.5" step="0.1"></div>
+  </div>
+  <div id="ebp" class="note"></div>
+</div>
+</details>
+
+<details>
+<summary><div>Caixa selada<span>Volume, Qtc, F3 e curva de resposta</span></div></summary>
+<div class="body">
+  <div class="grid">
+    <div><label>Qtc desejado</label><input id="qtc" type="number" value="0.707" step="0.01"></div>
+    <div><label>Seu volume líquido (L) <span class="pill">opcional</span></label><input id="vbs" type="number" placeholder="usa o ideal"></div>
+  </div>
+  <div class="row"><button onclick="calcSelada()">Calcular</button></div>
+  <div class="out" id="o-sel"></div>
+  <canvas id="c-sel" height="230"></canvas>
+  <div class="note">Qtc 0,5–0,6: grave seco e estendido · 0,707: neutro (Butterworth) · 0,8–1,0: mais "punch", menos extensão.</div>
+</div>
+</details>
+
+<details>
+<summary><div>Caixa dutada (bass reflex)<span>Volume, sintonia, duto e velocidade do ar</span></div></summary>
+<div class="body">
+  <div class="grid">
+    <div><label>Volume líquido (L) <span class="pill">vazio = sugerido</span></label><input id="vbp" type="number" placeholder="auto"></div>
+    <div><label>Sintonia Fb (Hz) <span class="pill">vazio = sugerido</span></label><input id="fbp" type="number" placeholder="auto"></div>
+    <div><label>Tipo de duto</label><select id="ptype" onchange="portUI()"><option value="r">Redondo (tubo)</option><option value="s">Retangular (slot)</option></select></div>
+    <div id="pr1"><label>Diâmetro interno (cm)</label><input id="pd" type="number" value="10"></div>
+    <div id="ps1" style="display:none"><label>Largura do slot (cm)</label><input id="pw" type="number" value="30"></div>
+    <div id="ps2" style="display:none"><label>Altura do slot (cm)</label><input id="ph" type="number" value="5"></div>
+    <div><label>Quantidade de dutos</label><input id="pn" type="number" value="1" min="1"></div>
+  </div>
+  <div class="row"><button onclick="calcDutada()">Calcular</button></div>
+  <div class="out" id="o-dut"></div>
+  <div id="a-dut"></div>
+  <canvas id="c-dut" height="230"></canvas>
+  <div class="legend"><span><em style="background:var(--acc)"></em>Dutada</span><span><em style="background:var(--acc2)"></em>Selada (Qtc 0,707)</span></div>
+  <div class="note">Sugestão automática pelo alinhamento de Keele (QB3). Curva de Small com perdas QL = 7, sem ganho de cabine. No carro, o ganho de cabine reforça bastante abaixo de ~60 Hz.</div>
+</div>
+</details>
+
+<details>
+<summary><div>Volume pela medida da caixa<span>Medidas externas → litros líquidos</span></div></summary>
+<div class="body">
+  <div class="grid">
+    <div><label>Largura externa (cm)</label><input id="bw" type="number" value="60"></div>
+    <div><label>Altura externa (cm)</label><input id="bh" type="number" value="40"></div>
+    <div><label>Profundidade externa (cm)</label><input id="bdp" type="number" value="40"></div>
+    <div><label>Espessura MDF (mm)</label><input id="bt" type="number" value="18"></div>
+    <div><label>Descontar (L) — falante, duto, reforços</label><input id="bdesc" type="number" value="0"></div>
+  </div>
+  <div class="row"><button onclick="calcVolume()">Calcular</button></div>
+  <div class="out" id="o-vol"></div>
+  <h3>Medidas para um volume desejado</h3>
+  <div class="grid">
+    <div><label>Volume líquido alvo (L)</label><input id="vt" type="number" value="50"></div>
+    <div><label>Profundidade fixa (cm) <span class="pill">opcional</span></label><input id="vtd" type="number" placeholder="proporção áurea"></div>
+  </div>
+  <div class="row"><button class="sec" onclick="calcMedidas()">Sugerir medidas</button></div>
+  <div class="out" id="o-med"></div>
+</div>
+</details>
+</section>
+
+<!-- ================= ELÉTRICA ================= -->
+<section class="tab" id="t-eletrica">
+
+<details open>
+<summary><div>Ligação de subwoofers<span>Impedância final SVC / DVC, série / paralelo</span></div></summary>
+<div class="body">
+  <div class="grid">
+    <div><label>Quantidade de subs</label><input id="ns" type="number" value="2" min="1" max="8"></div>
+    <div><label>Bobina</label><select id="bob"><option value="1">Simples (SVC)</option><option value="2" selected>Dupla (DVC)</option></select></div>
+    <div><label>Ohms por bobina</label><select id="zb"><option>1</option><option selected>2</option><option>4</option><option>8</option></select></div>
+    <div><label>Impedância mínima do módulo (Ω)</label><input id="zmin" type="number" value="1" step="0.5"></div>
+  </div>
+  <div class="row"><button onclick="calcLigacao()">Ver ligações</button></div>
+  <div id="o-lig"></div>
+</div>
+</details>
+
+<details>
+<summary><div>Lei de Ohm e potência<span>Preencha 2 valores quaisquer</span></div></summary>
+<div class="body">
+  <div class="grid">
+    <div><label>Tensão V (V)</label><input id="ov" type="number"></div>
+    <div><label>Corrente I (A)</label><input id="oi" type="number"></div>
+    <div><label>Resistência R (Ω)</label><input id="or" type="number"></div>
+    <div><label>Potência P (W)</label><input id="op" type="number"></div>
+  </div>
+  <div class="row"><button onclick="calcOhm()">Calcular</button><button class="sec" onclick="['ov','oi','or','op'].forEach(i=>$(i).value='')">Limpar</button></div>
+  <div class="out" id="o-ohm"></div>
+</div>
+</details>
+
+<details>
+<summary><div>Consumo, cabo, fusível e capacitor<span>Dimensionamento da alimentação do módulo</span></div></summary>
+<div class="body">
+  <div class="grid">
+    <div><label>Potência RMS total (W)</label><input id="cp" type="number" value="2000"></div>
+    <div><label>Classe do módulo</label><select id="cc"><option value="0.8">Classe D (~80%)</option><option value="0.55">Classe AB (~55%)</option></select></div>
+    <div><label>Tensão do sistema (V)</label><input id="cv" type="number" value="13.8" step="0.1"></div>
+    <div><label>Comprimento do cabo positivo (m)</label><input id="cl" type="number" value="5" step="0.5"></div>
+    <div><label>Queda máxima aceitável (V)</label><input id="cdv" type="number" value="0.5" step="0.1"></div>
+    <div><label>Contar retorno pelo cabo negativo?</label><select id="cret"><option value="0">Não (terra curto no chassi)</option><option value="1">Sim (mesmo comprimento)</option></select></div>
+  </div>
+  <div class="row"><button onclick="calcCabo()">Calcular</button></div>
+  <div class="out" id="o-cab"></div>
+  <div id="a-cab"></div>
+</div>
+</details>
+
+<details>
+<summary><div>Alternador e bateria<span>Sobra de corrente e autonomia com motor desligado</span></div></summary>
+<div class="body">
+  <div class="grid">
+    <div><label>Alternador (A)</label><input id="alt" type="number" value="120"></div>
+    <div><label>Consumo do carro (A)</label><input id="acar" type="number" value="45"></div>
+    <div><label>Consumo do som (A)</label><input id="asom" type="number" value="150"></div>
+    <div><label>Bateria (Ah)</label><input id="bah" type="number" value="60"></div>
+  </div>
+  <div class="row"><button onclick="calcAlt()">Calcular</button></div>
+  <div class="out" id="o-alt"></div>
+  <div id="a-alt"></div>
+  <div class="note">O consumo do som com música real fica, em média, entre 1/8 e 1/3 do pico. A autonomia considera uso até 50% da carga da bateria.</div>
+</div>
+</details>
+</section>
+
+<!-- ================= AJUSTES ================= -->
+<section class="tab" id="t-ajustes">
+
+<details open>
+<summary><div>Ajuste de ganho por tensão<span>Tensão alvo na saída do módulo</span></div></summary>
+<div class="body">
+  <div class="grid">
+    <div><label>Potência RMS do módulo (W)</label><input id="gp" type="number" value="1000"></div>
+    <div><label>Impedância de carga (Ω)</label><input id="gz" type="number" value="2" step="0.5"></div>
+  </div>
+  <div class="row"><button onclick="calcGanho()">Calcular</button></div>
+  <div class="out" id="o-gan"></div>
+  <div class="note">Como fazer: desligue o falante, zere graves/loudness/EQ, coloque o tom de teste a 0 dB (50 Hz para sub, 1 kHz para médios) com o volume do rádio a ~80% do máximo sem distorção. Meça AC na saída do módulo e gire o ganho até a tensão alvo. O gerador está na aba <b>Sinais</b>.</div>
+</div>
+</details>
+
+<details>
+<summary><div>Crossover passivo<span>Valores de bobina e capacitor</span></div></summary>
+<div class="body">
+  <div class="grid">
+    <div><label>Frequência de corte (Hz)</label><input id="xf" type="number" value="3500"></div>
+    <div><label>Impedância do falante (Ω)</label><input id="xz" type="number" value="4"></div>
+    <div><label>Tipo</label><select id="xt"><option value="1">1ª ordem (6 dB/oit)</option><option value="bw">2ª ordem Butterworth (12 dB/oit)</option><option value="lr">2ª ordem Linkwitz-Riley (12 dB/oit)</option></select></div>
+  </div>
+  <div class="row"><button onclick="calcXover()">Calcular</button></div>
+  <div class="out" id="o-xo"></div>
+  <canvas id="c-xo" height="200"></canvas>
+  <div class="legend"><span><em style="background:var(--acc2)"></em>Passa-baixa</span><span><em style="background:var(--acc)"></em>Passa-alta</span><span><em style="background:#9aa4b4"></em>Soma</span></div>
+  <div class="note">Passa-alta (tweeter): capacitor em série e bobina em paralelo. Passa-baixa (médio/woofer): bobina em série e capacitor em paralelo. Fórmulas consideram impedância resistiva constante.</div>
+</div>
+</details>
+
+<details>
+<summary><div>Alinhamento temporal (delay)<span>Distâncias até o ouvinte → ms</span></div></summary>
+<div class="body">
+  <div class="grid" id="ta-in"></div>
+  <div class="row"><button onclick="calcDelay()">Calcular</button></div>
+  <div id="o-del"></div>
+  <div class="note">Meça do centro de cada falante até a altura da cabeça do motorista. O falante mais distante fica com 0 ms; os outros recebem o atraso. Velocidade do som: 343 m/s (20 °C).</div>
+</div>
+</details>
+
+<details>
+<summary><div>SPL e decibéis<span>Pressão sonora estimada e conversões</span></div></summary>
+<div class="body">
+  <div class="grid">
+    <div><label>Sensibilidade (dB 1W/1m)</label><input id="ss" type="number" value="88"></div>
+    <div><label>Potência aplicada (W)</label><input id="sp" type="number" value="500"></div>
+    <div><label>Quantidade de falantes iguais</label><input id="sn" type="number" value="1" min="1"></div>
+    <div><label>Distância (m)</label><input id="sdist" type="number" value="1" step="0.1"></div>
+  </div>
+  <div class="row"><button onclick="calcSPL()">Calcular</button></div>
+  <div class="out" id="o-spl"></div>
+  <h3>Conversão de dB</h3>
+  <div class="grid">
+    <div><label>Valor 1</label><input id="d1" type="number" value="100"></div>
+    <div><label>Valor 2</label><input id="d2" type="number" value="200"></div>
+    <div><label>Grandeza</label><select id="dk"><option value="10">Potência (10·log)</option><option value="20">Tensão/pressão (20·log)</option></select></div>
+  </div>
+  <div class="row"><button class="sec" onclick="calcDB()">Converter</button></div>
+  <div class="out" id="o-db"></div>
+  <div class="note">Estimativa em campo livre, sem ganho de cabine. Dobrar a potência = +3 dB · dobrar a distância = −6 dB · dobrar falantes com potência dobrada = +6 dB.</div>
+</div>
+</details>
+</section>
+
+<!-- ================= SINAIS ================= -->
+<section class="tab" id="t-sinais">
+
+<details open>
+<summary><div>Gerador de sinais<span>Tons, ruído rosa e varredura pelo celular</span></div></summary>
+<div class="body">
+  <div class="grid">
+    <div><label>Sinal</label><select id="gw" onchange="genUpdate()"><option value="sine">Senoidal</option><option value="square">Quadrada</option><option value="triangle">Triangular</option><option value="sawtooth">Dente de serra</option><option value="pink">Ruído rosa</option><option value="white">Ruído branco</option><option value="sweep">Varredura (sweep)</option></select></div>
+    <div><label>Frequência: <b id="gfv">50 Hz</b></label><input id="gf" type="range" min="0" max="1000" value="212" oninput="genUpdate()"></div>
+    <div><label>Volume: <b id="gvv">50%</b></label><input id="gv" type="range" min="0" max="100" value="50" oninput="genUpdate()"></div>
+  </div>
+  <div class="grid" id="sw-ui" style="display:none;margin-top:10px">
+    <div><label>Sweep de (Hz)</label><input id="sw1" type="number" value="20"></div>
+    <div><label>até (Hz)</label><input id="sw2" type="number" value="200"></div>
+    <div><label>Duração (s)</label><input id="swt" type="number" value="10"></div>
+  </div>
+  <div class="row">
+    <button id="gbtn" onclick="genToggle()">▶ Tocar</button>
+    <button class="sec" onclick="setF(40)">40 Hz</button><button class="sec" onclick="setF(50)">50 Hz</button><button class="sec" onclick="setF(1000)">1 kHz</button>
+  </div>
+  <div class="note">Para ajuste de ganho, conecte o celular na entrada auxiliar/Bluetooth com o volume do celular no máximo e o volume aqui em 100% (0 dB). Comece sempre com o volume do rádio baixo.</div>
+</div>
+</details>
+
+<details>
+<summary><div>Simulador de clipping (osciloscópio)<span>Veja o sinal do módulo saturar</span></div></summary>
+<div class="body">
+  <div class="grid">
+    <div><label>Potência RMS do módulo (W)</label><input id="kp" type="number" value="1000" oninput="drawScope()"></div>
+    <div><label>Carga (Ω)</label><input id="kz" type="number" value="2" step="0.5" oninput="drawScope()"></div>
+    <div><label>Frequência (Hz)</label><input id="kf" type="number" value="50" oninput="drawScope()"></div>
+    <div><label>Ganho: <b id="kgv">100%</b></label><input id="kg" type="range" min="10" max="300" value="100" oninput="drawScope()"></div>
+  </div>
+  <canvas id="c-sc" height="220"></canvas>
+  <div class="out" id="o-sc"></div>
+  <div id="a-sc"></div>
+  <div class="note">100% = ganho no ponto exato da potência nominal. Acima disso a onda achata (clipping), a potência média sobe e vira calor na bobina — principal causa de queima de falantes.</div>
+</div>
+</details>
+
+<details>
+<summary><div>Analisador de espectro (RTA)<span>Microfone do celular em 1/3 de oitava</span></div></summary>
+<div class="body">
+  <div class="row"><button id="rbtn" onclick="rtaToggle()">🎤 Iniciar microfone</button><button class="sec" onclick="rtaHold=!rtaHold;this.textContent=rtaHold?'Liberar':'Congelar'">Congelar</button></div>
+  <canvas id="c-rta" height="240"></canvas>
+  <div class="out" id="o-rta"></div>
+  <div class="note">Use com ruído rosa para ver o equilíbrio do sistema. O microfone do celular não é calibrado e corta graves profundos — serve para comparação e tendência, não para medição absoluta.</div>
+</div>
+</details>
+
+<details>
+<summary><div>Sinais elétricos: RMS, pico e pico-a-pico<span>Conversões para medição com multímetro e osciloscópio</span></div></summary>
+<div class="body">
+  <div class="grid">
+    <div><label>Valor medido (V)</label><input id="rv" type="number" value="44.7"></div>
+    <div><label>O valor é</label><select id="rk"><option value="rms">RMS</option><option value="pk">Pico</option><option value="pp">Pico-a-pico</option></select></div>
+    <div><label>Forma de onda</label><select id="rf"><option value="sine">Senoidal</option><option value="sq">Quadrada</option><option value="tri">Triangular</option></select></div>
+    <div><label>Carga (Ω) <span class="pill">opcional</span></label><input id="rz" type="number" value="2"></div>
+  </div>
+  <div class="row"><button onclick="calcRMS()">Converter</button></div>
+  <div class="out" id="o-rms"></div>
+</div>
+</details>
+</section>
+</main>
+
+<nav>
+  <button class="on" data-t="caixas"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="14" r="4"/><circle cx="12" cy="7" r="1.3"/></svg>Caixas</button>
+  <button data-t="eletrica"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>Elétrica</button>
+  <button data-t="ajustes"><svg viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>Ajustes</button>
+  <button data-t="sinais"><svg viewBox="0 0 24 24"><path d="M2 12h3l3-8 4 16 3-8h7"/></svg>Sinais</button>
+</nav>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const v=id=>{const x=parseFloat(String($(id).value).replace(',','.'));return isFinite(x)?x:NaN};
+const f=(x,d=1)=>isFinite(x)?x.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';
+const kv=(label,val,unit='')=>`<div class="kv"><i>${label}</i><b>${val}</b> ${unit}</div>`;
+const al=(cls,txt)=>`<div class="alert ${cls}">${txt}</div>`;
+const LOG10=Math.log10;
+
+/* ---------- navegação ---------- */
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('section.tab').forEach(s=>s.classList.toggle('on',s.id==='t-'+b.dataset.t));
+  scrollTo(0,0); setTimeout(redrawAll,30);
+});
+
+/* ---------- gráfico de resposta (log) ---------- */
+function setupCanvas(c){
+  if(!c.dataset.h)c.dataset.h=c.getAttribute('height');
+  const r=devicePixelRatio||1, w=c.clientWidth, h=+c.dataset.h;
+  if(!w) return null;
+  c.width=w*r; c.height=h*r; c.style.height=h+'px';
+  const g=c.getContext('2d'); g.setTransform(r,0,0,r,0,0); return {g,w,h};
+}
+function plotResp(c,curves,{fmin=10,fmax=300,dbmin=-24,dbmax=6,marks=[]}={}){
+  const s=setupCanvas(c); if(!s) return; const {g,w,h}=s;
+  const L=34,R=8,T=8,B=22, pw=w-L-R, ph=h-T-B;
+  const X=fr=>L+pw*(LOG10(fr/fmin)/LOG10(fmax/fmin));
+  const Y=db=>T+ph*(dbmax-db)/(dbmax-dbmin);
+  g.clearRect(0,0,w,h); g.font='10px system-ui'; g.lineWidth=1;
+  for(let db=dbmin;db<=dbmax;db+=3){g.strokeStyle=db===0?'#3a4352':'#1c222c';g.beginPath();g.moveTo(L,Y(db));g.lineTo(w-R,Y(db));g.stroke();
+    if(db%6===0){g.fillStyle='#6b7687';g.fillText(db,4,Y(db)+3)}}
+  const ticks=[10,20,30,50,100,200,300,500,1000,2000,5000,10000,20000].filter(t=>t>=fmin&&t<=fmax);
+  ticks.forEach(t=>{g.strokeStyle='#1c222c';g.beginPath();g.moveTo(X(t),T);g.lineTo(X(t),T+ph);g.stroke();
+    g.fillStyle='#6b7687';g.fillText(t>=1000?t/1000+'k':t,X(t)-8,h-6)});
+  g.strokeStyle='#ffc53d55';g.setLineDash([4,4]);g.beginPath();g.moveTo(L,Y(-3));g.lineTo(w-R,Y(-3));g.stroke();g.setLineDash([]);
+  curves.forEach(cv=>{g.strokeStyle=cv.color;g.lineWidth=2.2;g.beginPath();let st=false;
+    for(let i=0;i<=300;i++){const fr=fmin*Math.pow(fmax/fmin,i/300);let db=cv.fn(fr);db=Math.max(dbmin-2,Math.min(dbmax+2,db));
+      st?g.lineTo(X(fr),Y(db)):(g.moveTo(X(fr),Y(db)),st=true)} g.stroke()});
+  marks.forEach(m=>{if(!isFinite(m.f))return;g.fillStyle=m.color;g.beginPath();g.arc(X(m.f),Y(m.db),4,0,7);g.fill();g.fillText(m.t,X(m.f)+6,Y(m.db)-6)});
+}
+
+/* ---------- modelos de caixa ---------- */
+// Selada: passa-altas de 2ª ordem
+function seladaDB(fr,fc,q){const x=fr/fc,x2=x*x;return 10*LOG10(x2*x2/((1-x2)**2+x2/(q*q)))}
+// Dutada: modelo de Small (4ª ordem) com perdas QL
+function dutadaDB(fr,fs,qts,vas,vb,fb,ql=7){
+  const a=vas/vb,h=fb/fs,x=fr/Math.sqrt(fs*fb),sh=Math.sqrt(h);
+  const a1=(ql+h*qts)/(sh*ql*qts), a2=(h+(a+1+h*h)*ql*qts)/(h*ql*qts), a3=(h*ql+qts)/(sh*ql*qts);
+  const x2=x*x,re=x2*x2-a2*x2+1,im=-a1*x2*x+a3*x;
+  return 20*LOG10(x2*x2/Math.hypot(re,im));
+}
+function findF3(fn,lo=3,hi=500){let p=hi;for(let i=0;i<=2000;i++){const fr=hi*Math.pow(lo/hi,i/2000);if(fn(fr)<-3){return (fr+p)/2}p=fr}return NaN}
+function tsp(){return{fs:v('fs'),qts:v('qts'),vas:v('vas'),sd:v('sd'),xmax:v('xmax'),vd:v('vd')||0}}
+function showEBP(){const {fs,qts}=tsp();const e=fs/qts;let t='';
+  if(isFinite(e)){t=`EBP (Fs/Qts) = <b>${f(e,0)}</b> → `+(e<50?'mais indicado para <b>caixa selada</b>.':e<=100?'funciona em <b>selada ou dutada</b>.':'mais indicado para <b>caixa dutada</b>.')}
+  $('ebp').innerHTML=t}
+
+function calcSelada(){
+  const {fs,qts,vas,vd}=tsp(), qtc=v('qtc');
+  if(!(fs>0&&qts>0&&vas>0&&qtc>qts)){$('o-sel').innerHTML=al('bad','Confira Fs, Qts, Vas. O Qtc precisa ser maior que o Qts.');return}
+  const vbi=vas/((qtc/qts)**2-1);
+  const vb=v('vbs')>0?v('vbs'):vbi;
+  const q=qts*Math.sqrt(vas/vb+1), fc=fs*q/qts;
+  const f3=findF3(fr=>seladaDB(fr,fc,q));
+  $('o-sel').innerHTML=kv('Volume ideal (Qtc '+f(qtc,3)+')',f(vbi,1),'L')+kv('Volume bruto (+ falante)',f(vbi+vd,1),'L')
+    +kv('Qtc com '+f(vb,1)+' L',f(q,3))+kv('Fc (ressonância)',f(fc,1),'Hz')+kv('F3 (−3 dB)',f(f3,1),'Hz');
+  plotResp($('c-sel'),[{color:'#28c7fa',fn:fr=>seladaDB(fr,fc,q)}],{marks:[{f:f3,db:-3,t:'F3',color:'#ffc53d'}]});
+}
+
+function portUI(){const s=$('ptype').value==='s';$('pr1').style.display=s?'none':'';$('ps1').style.display=$('ps2').style.display=s?'':'none';calcDutada()}
+function calcDutada(){
+  const {fs,qts,vas,sd,xmax,vd}=tsp();
+  if(!(fs>0&&qts>0&&vas>0)){$('o-dut').innerHTML=al('bad','Preencha Fs, Qts e Vas.');return}
+  const vb=v('vbp')>0?v('vbp'):15*qts**2.87*vas;
+  const fb=v('fbp')>0?v('fbp'):0.42*fs*qts**-0.9;
+  const n=Math.max(1,Math.round(v('pn')||1));
+  let A,deq;
+  if($('ptype').value==='s'){A=v('pw')*v('ph')}else{A=Math.PI*v('pd')**2/4}
+  deq=Math.sqrt(4*A/Math.PI);
+  const At=A*n, Lv=29975*At/(fb*fb*vb)-0.732*deq;
+  const vp=At*Math.max(Lv,0)/1000;
+  const fn=fr=>dutadaDB(fr,fs,qts,vas,vb,fb), f3=findF3(fn);
+  const vel=(sd>0&&xmax>0)?2*Math.PI*fb*sd*xmax/(1000*At):NaN;
+  $('o-dut').innerHTML=kv('Volume líquido',f(vb,1),'L')+kv('Sintonia Fb',f(fb,1),'Hz')+kv('F3 (−3 dB)',f(f3,1),'Hz')
+    +kv('Comprimento de cada duto',f(Lv,1),'cm')+kv('Área total do duto',f(At,0),'cm²')+kv('Volume dos dutos',f(vp,1),'L')
+    +kv('Volume bruto total',f(vb+vp+vd,1),'L')+kv('Velocidade do ar (máx.)',f(vel,1),'m/s');
+  let a='';
+  if(qts>0.6)a+=al('warn','Qts acima de 0,6: o falante tende a ficar "embolado" em caixa dutada. Prefira selada.');
+  if(Lv<=2)a+=al('bad','Duto muito curto (ou negativo): diminua a área do duto ou aumente o volume/baixe a sintonia.');
+  if(isFinite(vel))a+=vel>25?al('bad','Velocidade alta: vai haver ruído de vento (chuffing). Aumente a área do duto.'):vel>17?al('warn','Velocidade no limite. Um duto maior deixa o som mais limpo.'):al('ok','Velocidade do ar dentro do recomendado (até 17 m/s).');
+  $('a-dut').innerHTML=a;
+  const qtcS=0.707,vbS=vas/((qtcS/qts)**2-1),qS=qts*Math.sqrt(vas/vbS+1),fcS=fs*qS/qts;
+  const curves=[{color:'#e3262e',fn}]; if(vbS>0)curves.push({color:'#28c7fa',fn:fr=>seladaDB(fr,fcS,qS)});
+  plotResp($('c-dut'),curves,{marks:[{f:f3,db:-3,t:'F3',color:'#ffc53d'},{f:fb,db:fn(fb),t:'Fb',color:'#e3262e'}]});
+}
+
+function calcVolume(){
+  const t=v('bt')/10,w=v('bw')-2*t,h=v('bh')-2*t,d=v('bdp')-2*t;
+  const vi=w*h*d/1000, liq=vi-(v('bdesc')||0);
+  $('o-vol').innerHTML=kv('Medidas internas',`${f(w,1)} × ${f(h,1)} × ${f(d,1)}`,'cm')+kv('Volume interno',f(vi,1),'L')+kv('Volume líquido',f(liq,1),'L')
+    +kv('Área de MDF (aprox.)',f(2*(v('bw')*v('bh')+v('bw')*v('bdp')+v('bh')*v('bdp'))/10000,2),'m²');
+}
+function calcMedidas(){
+  const V=v('vt')*1000,t=v('bt')/10,dd=v('vtd');let w,h,d;
+  if(dd>0){d=dd-2*t;const ar=V/d;w=Math.sqrt(ar/0.618);h=w*0.618}
+  else{const s=Math.cbrt(V);w=s*1.618;h=s;d=s*0.618}
+  $('o-med').innerHTML=kv('Internas (L × A × P)',`${f(w,1)} × ${f(h,1)} × ${f(d,1)}`,'cm')+kv('Externas (MDF '+f(t*10,0)+' mm)',`${f(w+2*t,1)} × ${f(h+2*t,1)} × ${f(d+2*t,1)}`,'cm');
+}
+
+/* ---------- elétrica ---------- */
+function calcLigacao(){
+  const n=Math.max(1,Math.round(v('ns'))),dvc=$('bob').value==='2',z=v('zb'),zmin=v('zmin')||0;
+  const combos=[];
+  const bobs=dvc?[['série',2*z],['paralelo',z/2]]:[['—',z]];
+  bobs.forEach(([bl,zs])=>{
+    combos.push({b:bl,s:'série',z:zs*n});
+    if(n>1)combos.push({b:bl,s:'paralelo',z:zs/n});
+    // pares em série, pares ligados em paralelo
+    if(n>=4&&n%2===0)combos.push({b:bl,s:'série-paralelo (pares)',z:(2*zs)/(n/2)});
+  });
+  let rows=combos.map(c=>{const okz=c.z>=zmin;return `<tr><td>${dvc?'Bobinas em '+c.b:'SVC'}</td><td>${n>1?'Subs em '+c.s:'1 sub'}</td><td style="color:${okz?'var(--ok)':'var(--bad)'}"><b>${f(c.z,2)} Ω</b></td></tr>`}).join('');
+  $('o-lig').innerHTML=`<table><tr><th>Bobinas</th><th>Entre subs</th><th>Final</th></tr>${rows}</table>`+al('warn','Em verde as ligações que o módulo aguenta (≥ '+f(zmin,1)+' Ω). Nunca ligue as duas bobinas de um DVC em módulos diferentes sem bridge correto.');
+}
+function calcOhm(){
+  let V=v('ov'),I=v('oi'),R=v('or'),P=v('op');const has=[V,I,R,P].filter(isFinite).length;
+  if(has<2){$('o-ohm').innerHTML=al('bad','Preencha pelo menos 2 campos.');return}
+  if(isFinite(V)&&isFinite(I)){R=V/I;P=V*I}
+  else if(isFinite(V)&&isFinite(R)){I=V/R;P=V*V/R}
+  else if(isFinite(V)&&isFinite(P)){I=P/V;R=V*V/P}
+  else if(isFinite(I)&&isFinite(R)){V=I*R;P=I*I*R}
+  else if(isFinite(I)&&isFinite(P)){V=P/I;R=P/(I*I)}
+  else if(isFinite(R)&&isFinite(P)){V=Math.sqrt(P*R);I=Math.sqrt(P/R)}
+  $('o-ohm').innerHTML=kv('Tensão',f(V,2),'V')+kv('Corrente',f(I,2),'A')+kv('Resistência',f(R,3),'Ω')+kv('Potência',f(P,1),'W');
+}
+const AWG=[['8 AWG',8.37],['6 AWG',13.3],['4 AWG',21.2],['2 AWG',33.6],['1/0 AWG',53.5],['2/0 AWG',67.4],['4/0 AWG',107]];
+const MM=[6,10,16,25,35,50,70,95,120];
+const FUS=[20,25,30,40,50,60,70,80,100,125,150,175,200,250,300,350,400,500];
+function calcCabo(){
+  const P=v('cp'),ef=v('cc'),V=v('cv'),L=v('cl'),dv=v('cdv'),ret=$('cret').value==='1';
+  const I=P/(ef*V), Lt=ret?2*L:L;
+  const Aq=0.0172*Lt*I/dv, Ac=I/7, A=Math.max(Aq,Ac);
+  const mm=MM.find(x=>x>=A), awg=AWG.find(x=>x[1]>=A);
+  const fus=FUS.find(x=>x>=I*1.1);
+  const realDrop=0.0172*Lt*I/(awg?awg[1]:A);
+  $('o-cab').innerHTML=kv('Corrente máxima',f(I,0),'A')+kv('Corrente média (música)',f(I/3,0),'A')+kv('Seção mínima',f(A,1),'mm²')
+    +kv('Cabo comercial',mm?mm+' mm²':'> 120 mm²')+kv('Equivalente AWG',awg?awg[0]:'> 4/0')+kv('Queda com esse cabo',f(realDrop,2),'V')
+    +kv('Fusível sugerido',fus?fus+' A':'dividir em 2 linhas')+kv('Capacitor (1 F / 1000 W)',f(P/1000,1),'F');
+  $('a-cab').innerHTML=al('warn','O fusível protege o <b>cabo</b>: instale-o a até 30 cm da bateria e confira se o cabo escolhido suporta essa corrente. Use cabo de cobre (OFC) — cabo CCA (alumínio cobreado) precisa de uma bitola acima.');
+}
+function calcAlt(){
+  const alt=v('alt'),car=v('acar'),som=v('asom'),ah=v('bah');
+  const sobraPico=alt-car-som, sobraMed=alt-car-som/3, aut=0.5*ah/(som/3);
+  $('o-alt').innerHTML=kv('Sobra no pico',f(sobraPico,0),'A')+kv('Sobra média (música)',f(sobraMed,0),'A')+kv('Autonomia motor desligado',f(aut*60,0),'min');
+  $('a-alt').innerHTML=sobraMed<0?al('bad','O alternador não dá conta nem na média: a bateria vai descarregar com o carro ligado. Considere alternador maior ou bateria auxiliar com isolador.'):sobraPico<0?al('warn','Nos picos a bateria complementa a corrente. Funciona, mas a tensão vai cair nos graves fortes; bateria extra ajuda.'):al('ok','O alternador cobre o sistema inclusive nos picos.');
+}
+
+/* ---------- ajustes ---------- */
+function calcGanho(){
+  const P=v('gp'),Z=v('gz'),Vr=Math.sqrt(P*Z);
+  $('o-gan').innerHTML=kv('Tensão alvo (AC RMS)',f(Vr,1),'V')+kv('Tensão de pico',f(Vr*Math.SQRT2,1),'V')+kv('Pico-a-pico (osciloscópio)',f(2*Vr*Math.SQRT2,1),'V')+kv('Corrente na carga',f(Vr/Z,1),'A');
+}
+function calcXover(){
+  const fr=v('xf'),R=v('xz'),t=$('xt').value,w=2*Math.PI*fr;let L,C,q=0;
+  if(t==='1'){L=R/w;C=1/(w*R)}else if(t==='bw'){L=Math.SQRT2*R/w;C=1/(Math.SQRT2*w*R);q=Math.SQRT1_2}else{L=2*R/w;C=1/(2*w*R);q=0.5}
+  $('o-xo').innerHTML=kv('Bobina (L)',f(L*1000,3),'mH')+kv('Capacitor (C)',f(C*1e6,2),'µF')+kv('Inclinação',t==='1'?'6 dB/oit':'12 dB/oit');
+  const lp=x=>t==='1'?[1/(1+x*x),-x/(1+x*x)]:cdiv([1,0],[1-x*x,x/q]);
+  const hp=x=>t==='1'?[x*x/(1+x*x),x/(1+x*x)]:cdiv([-x*x,0],[1-x*x,x/q]);
+  const mag=c=>20*LOG10(Math.hypot(c[0],c[1]));
+  const sgn=t==='1'?1:-1;
+  plotResp($('c-xo'),[{color:'#28c7fa',fn:a=>mag(lp(a/fr))},{color:'#e3262e',fn:a=>mag(hp(a/fr))},
+    {color:'#9aa4b4',fn:a=>{const l=lp(a/fr),h=hp(a/fr);return mag([l[0]+sgn*h[0],l[1]+sgn*h[1]])}}],{fmin:200,fmax:20000,dbmin:-30,dbmax:6});
+}
+function cdiv(a,b){const d=b[0]*b[0]+b[1]*b[1];return[(a[0]*b[0]+a[1]*b[1])/d,(a[1]*b[0]-a[0]*b[1])/d]}
+const TA=[['Tweeter esquerdo',95],['Tweeter direito',130],['Médio esquerdo',85],['Médio direito',125],['Subwoofer',180]];
+$('ta-in').innerHTML=TA.map((c,i)=>`<div><label>${c[0]} (cm)</label><input id="ta${i}" type="number" value="${c[1]}"></div>`).join('');
+function calcDelay(){
+  const d=TA.map((c,i)=>v('ta'+i)),mx=Math.max(...d.filter(isFinite));
+  $('o-del').innerHTML='<table><tr><th>Canal</th><th>Distância</th><th>Delay</th><th>Compensar</th></tr>'+TA.map((c,i)=>isFinite(d[i])?`<tr><td>${c[0]}</td><td>${f(d[i],0)} cm</td><td><b style="color:var(--acc2)">${f((mx-d[i])/34.3,2)} ms</b></td><td>${f(mx-d[i],0)} cm</td></tr>`:'').join('')+'</table>';
+}
+function calcSPL(){
+  const s=v('ss'),P=v('sp'),n=Math.max(1,v('sn')||1),d=v('sdist')||1;
+  const spl=s+10*LOG10(P)+10*LOG10(n)-20*LOG10(d);
+  $('o-spl').innerHTML=kv('SPL estimado',f(spl,1),'dB')+kv('Por falante',f(P/n,0),'W')+kv('Ganho por somar falantes',f(10*LOG10(n),1),'dB');
+}
+function calcDB(){const k=+$('dk').value,a=v('d1'),b=v('d2');$('o-db').innerHTML=kv('Diferença',(b>=a?'+':'')+f(k*LOG10(b/a),2),'dB')+kv('Razão',f(b/a,3),'×')}
+
+/* ---------- sinais: gerador ---------- */
+let AC=null,gNode=null,src=null,playing=false,swTimer=null;
+const fSlider=()=>10*Math.pow(2000,v('gf')/1000);
+function setF(x){$('gf').value=1000*LOG10(x/10)/LOG10(2000);genUpdate()}
+function noiseBuf(pink){const n=AC.sampleRate*4,b=AC.createBuffer(1,n,AC.sampleRate),d=b.getChannelData(0);
+  let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+  for(let i=0;i<n;i++){const w=Math.random()*2-1;
+    if(!pink){d[i]=w*0.5;continue}
+    b0=0.99886*b0+w*0.0555179;b1=0.99332*b1+w*0.0750759;b2=0.969*b2+w*0.153852;b3=0.8665*b3+w*0.3104856;b4=0.55*b4+w*0.5329522;b5=-0.7616*b5-w*0.016898;
+    d[i]=(b0+b1+b2+b3+b4+b5+b6+w*0.5362)*0.11;b6=w*0.115926}
+  return b}
+function genStart(){
+  AC=AC||new (window.AudioContext||window.webkitAudioContext)(); AC.resume();
+  gNode=AC.createGain(); gNode.gain.value=v('gv')/100; gNode.connect(AC.destination);
+  const w=$('gw').value;
+  if(w==='pink'||w==='white'){src=AC.createBufferSource();src.buffer=noiseBuf(w==='pink');src.loop=true}
+  else{src=AC.createOscillator();src.type=w==='sweep'?'sine':w;src.frequency.value=fSlider();
+    if(w==='sweep'){const run=()=>{const a=v('sw1')||20,b=v('sw2')||200,T=v('swt')||10,t0=AC.currentTime;
+      src.frequency.cancelScheduledValues(t0);src.frequency.setValueAtTime(a,t0);src.frequency.exponentialRampToValueAtTime(b,t0+T)};
+      run();swTimer=setInterval(run,(v('swt')||10)*1000)}}
+  src.connect(gNode);src.start();playing=true;$('gbtn').textContent='■ Parar';
+}
+function genStop(){try{src&&src.stop()}catch(e){}clearInterval(swTimer);src=null;playing=false;$('gbtn').textContent='▶ Tocar'}
+function genToggle(){playing?genStop():genStart()}
+let lastW='sine';
+function genUpdate(){
+  const fr=fSlider(),w=$('gw').value;
+  $('gfv').textContent=fr>=1000?f(fr/1000,2)+' kHz':f(fr,fr<100?1:0)+' Hz';$('gvv').textContent=$('gv').value+'%'+($('gv').value==='100'?' (0 dB)':'');
+  $('sw-ui').style.display=w==='sweep'?'':'none';
+  if(playing){if(w!==lastW){genStop();genStart()}else{gNode.gain.setTargetAtTime(v('gv')/100,AC.currentTime,0.02);if(src.frequency&&w!=='sweep')src.frequency.setTargetAtTime(fr,AC.currentTime,0.02)}}
+  lastW=w;
+}
+
+/* ---------- sinais: simulador de clipping ---------- */
+function drawScope(){
+  const P=v('kp'),Z=v('kz'),g=v('kg')/100;$('kgv').textContent=Math.round(g*100)+'%';
+  const rail=Math.sqrt(2*P*Z),A=rail*g;
+  const N=4000;let s2=0,a1=0,clip=0;
+  for(let i=0;i<N;i++){const ph=2*Math.PI*i/N,x=A*Math.sin(ph),y=Math.max(-rail,Math.min(rail,x));if(Math.abs(x)>rail)clip++;s2+=y*y;a1+=y*Math.sin(ph)}
+  const vr=Math.sqrt(s2/N),fund=(2*a1/N)/Math.SQRT2,thd=Math.sqrt(Math.max(vr*vr-fund*fund,0))/fund*100,Pout=vr*vr/Z;
+  $('o-sc').innerHTML=kv('Tensão RMS de saída',f(vr,1),'V')+kv('Potência média na carga',f(Pout,0),'W')+kv('Tempo em clipping',f(clip/N*100,1),'%')+kv('Distorção (THD)',f(thd,1),'%');
+  $('a-sc').innerHTML=thd<1?al('ok','Sinal limpo.'):thd<10?al('warn','Início de clipping: já gera aquecimento extra e aspereza no som.'):al('bad','Clipping severo: sinal quase quadrado. Alto risco de queimar a bobina e os tweeters.');
+  const s=setupCanvas($('c-sc'));if(!s)return;const {g:c,w,h}=s;
+  const max=Math.max(A,rail)*1.15,Y=y=>h/2-y/max*(h/2-10);
+  c.clearRect(0,0,w,h);c.strokeStyle='#1c222c';for(let i=1;i<10;i++){c.beginPath();c.moveTo(w*i/10,0);c.lineTo(w*i/10,h);c.stroke()}
+  c.beginPath();c.moveTo(0,h/2);c.lineTo(w,h/2);c.stroke();
+  c.strokeStyle='#ff4d5e88';c.setLineDash([5,4]);[rail,-rail].forEach(r=>{c.beginPath();c.moveTo(0,Y(r));c.lineTo(w,Y(r));c.stroke()});
+  c.font='10px system-ui';c.fillStyle='#ff4d5e';c.fillText('limite +'+f(rail,1)+' V',6,Y(rail)-4);
+  c.strokeStyle='#8f9aab66';c.beginPath();for(let i=0;i<=w;i++){const y=A*Math.sin(4*Math.PI*i/w);i?c.lineTo(i,Y(y)):c.moveTo(i,Y(y))}c.stroke();c.setLineDash([]);
+  c.strokeStyle=thd<1?'#3ddc84':thd<10?'#ffc53d':'#ff4d5e';c.lineWidth=2.4;c.beginPath();
+  for(let i=0;i<=w;i++){const y=Math.max(-rail,Math.min(rail,A*Math.sin(4*Math.PI*i/w)));i?c.lineTo(i,Y(y)):c.moveTo(i,Y(y))}c.stroke();c.lineWidth=1;
+  c.fillStyle='#6b7687';c.fillText('2 ciclos · '+f(2000/(v('kf')||50),1)+' ms',w-92,h-6);
+}
+
+/* ---------- sinais: RTA ---------- */
+let rtaOn=false,rtaHold=false,rtaStream=null,an=null,rtaBuf=null,bands=[];
+for(let k=-16;k<=13;k++){const fc=1000*Math.pow(2,k/3);bands.push({fc,lo:fc*Math.pow(2,-1/6),hi:fc*Math.pow(2,1/6),db:-100})}
+async function rtaToggle(){
+  if(rtaOn){rtaStream.getTracks().forEach(t=>t.stop());rtaOn=false;$('rbtn').textContent='🎤 Iniciar microfone';return}
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();await AC.resume();
+    rtaStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+    const m=AC.createMediaStreamSource(rtaStream);an=AC.createAnalyser();an.fftSize=16384;an.smoothingTimeConstant=0.75;m.connect(an);
+    rtaBuf=new Float32Array(an.frequencyBinCount);rtaOn=true;$('rbtn').textContent='■ Parar microfone';rtaLoop();
+  }catch(e){$('o-rta').innerHTML=al('bad','Não foi possível acessar o microfone. Permita o acesso e abra o app por https.')}
+}
+function rtaLoop(){
+  if(!rtaOn)return;
+  if(!rtaHold){an.getFloatFrequencyData(rtaBuf);const bw=AC.sampleRate/an.fftSize;
+    bands.forEach(b=>{let p=0;for(let i=Math.max(1,Math.floor(b.lo/bw));i<=Math.ceil(b.hi/bw)&&i<rtaBuf.length;i++)p+=Math.pow(10,rtaBuf[i]/10);b.db=10*LOG10(p||1e-12)})}
+  const s=setupCanvas($('c-rta'));if(s){const {g,w,h}=s,mx=Math.max(...bands.map(b=>b.db)),bwid=(w-30)/bands.length;
+    g.clearRect(0,0,w,h);g.font='9px system-ui';
+    for(let d=0;d>=-40;d-=10){const y=8+(h-28)*(-d/40);g.strokeStyle='#1c222c';g.beginPath();g.moveTo(26,y);g.lineTo(w,y);g.stroke();g.fillStyle='#6b7687';g.fillText(d,2,y+3)}
+    bands.forEach((b,i)=>{const rel=Math.max(-40,b.db-mx),bh=(h-28)*(1+rel/40),x=28+i*bwid;
+      g.fillStyle=`hsl(${20+i*7},90%,58%)`;g.fillRect(x,8+(h-28)-bh,bwid-2,bh);
+      if(i%3===0){g.fillStyle='#6b7687';g.fillText(b.fc>=1000?Math.round(b.fc/100)/10+'k':Math.round(b.fc),x,h-6)}});
+    const pk=bands.reduce((a,b)=>b.db>a.db?b:a);$('o-rta').innerHTML=kv('Banda mais forte',pk.fc>=1000?f(pk.fc/1000,1)+' kHz':f(pk.fc,0)+' Hz')}
+  requestAnimationFrame(rtaLoop);
+}
+
+/* ---------- sinais elétricos ---------- */
+function calcRMS(){
+  const x=v('rv'),k=$('rk').value,fw=$('rf').value,z=v('rz');const cf={sine:Math.SQRT2,sq:1,tri:Math.sqrt(3)}[fw];
+  const rms=k==='rms'?x:k==='pk'?x/cf:x/2/cf, pk=rms*cf;
+  $('o-rms').innerHTML=kv('RMS',f(rms,2),'V')+kv('Pico',f(pk,2),'V')+kv('Pico-a-pico',f(2*pk,2),'V')+kv('Fator de crista',f(cf,3))+(z>0?kv('Potência em '+f(z,1)+' Ω',f(rms*rms/z,1),'W'):'');
+}
+
+/* ---------- inicialização ---------- */
+function redrawAll(){showEBP();calcSelada();calcDutada();calcXover();drawScope()}
+['fs','qts','vas','sd','xmax','vd'].forEach(id=>$(id).addEventListener('input',()=>{showEBP();calcSelada();calcDutada()}));
+document.querySelectorAll('details').forEach(d=>d.addEventListener('toggle',()=>d.open&&setTimeout(redrawAll,20)));
+addEventListener('resize',()=>setTimeout(redrawAll,50));
+redrawAll();calcVolume();calcMedidas();calcLigacao();calcCabo();calcAlt();calcGanho();calcDelay();calcSPL();calcDB();calcRMS();genUpdate();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
